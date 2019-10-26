@@ -890,8 +890,8 @@ build_cluster()
     for name in $server_list; do
         wait_for_host $name
     done
-    launch_builder
     pre_cluster
+    launch_builder
     deploy
     if (( $? )); then return 1; fi
     post_cluster
