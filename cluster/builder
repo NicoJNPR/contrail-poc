@@ -43,6 +43,7 @@ install_docker()
         --add-repo https://download.docker.com/linux/centos/docker-ce.repo
     #yum install -y docker-ce-18.03.1.ce
     yum install -y docker-ce-18.06.1.ce
+    systemctl enable docker
     systemctl start docker
 
     if [ "$(registry_security)" = "insecured" ]; then
@@ -100,7 +101,11 @@ build_instances_yaml()
     # Contrail container tag is with OpenStack release only for OpenStack.
     orch=$(cat instances.yaml | awk "/CLOUD_ORCHESTRATOR/"'{print $2}')
     if [ "$orch" == "openstack" ]; then
-        tag=$contrail_version-$openstack_version
+        if [ "$contrail_version" == "1910.23" ]; then
+            tag=$contrail_version
+        else 
+            tag=$contrail_version-$openstack_version
+        fi
     else
         tag=$contrail_version
     fi
