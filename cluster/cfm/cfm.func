@@ -26,15 +26,7 @@ pre_cluster()
     local arr
 
     echo "Pre-Deployment"
-    for name in $server_list; do
-        echo "Upgrade kernel on $name..."
-        arr=(${vm_address_list[$name]})
-        ssh ${arr[0]} "yum upgrade -y kernel"
-        ssh ${arr[0]} "reboot"
-    done
-    for name in $server_list; do
-        wait_for_host $name
-    done
+    upgrade_kernel
 }
 
 deploy()
