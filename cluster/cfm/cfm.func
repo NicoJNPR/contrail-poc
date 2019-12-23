@@ -22,9 +22,6 @@ delete_builder()
 
 pre_cluster()
 {
-    local name
-    local arr
-
     echo "Pre-Deployment"
     upgrade_kernel
 }
