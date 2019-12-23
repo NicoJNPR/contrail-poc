@@ -8,6 +8,7 @@ role[csn]="       1        4       20       volume"
 role[control]="   1        4       20       volume"
 role[master]="    2       16       40       volume"
 role[appformix]=" 4       16       60       volume"
+role[aio]="       8       64      160       volume"
 
 role[vqfx-re]="   1        1        0       file"
 role[vqfx-pfe]="  1        2        0       file"
