@@ -1,0 +1,272 @@
+#!/bin/bash
+
+# Configuration
+
+aio_username=root
+aio_password=c0ntrail123
+ntp_server=10.6.8.254
+contrail_version=__contrail_version__
+registry_url=hub.juniper.net/contrail
+registry_username=__registry_username__
+registry_password=__registry_password__
+contrail_deployer=contrail-kolla-ansible-deployer
+contrail_deployer_image=$registry_url/$contrail_deployer:$contrail_version
+command_deployer=contrail-command-deployer
+command_deployer_image=$registry_url/$command_deployer:$contrail_version
+
+get_aio_address()
+{
+    local a_p
+    local a
+
+    aio_interface=$(ip route | awk "/default/"'{ print $5}')
+    a_p=$(ip -f inet -br addr show dev $aio_interface | awk '{ print $3 }')
+    IFS='/'; a=(${a_p}); unset IFS
+    aio_address=${a[0]}
+}
+
+install_docker()
+{
+    echo "Install Docker CE..."
+    rpm -q docker-ce-18.06.1.ce > /dev/null 2>&1
+    if (( $? == 0 )); then
+        return
+    fi
+    yum install -y yum-utils device-mapper-persistent-data lvm2
+    yum-config-manager \
+        --add-repo https://download.docker.com/linux/centos/docker-ce.repo
+    yum install -y docker-ce-18.06.1.ce
+    systemctl enable docker
+    systemctl start docker
+}
+
+pull_image()
+{
+    local image=$1
+
+    echo "Pull $image..."
+    docker image list | grep $contrail_deployer > /dev/null 2>&1
+    if (( $? == 0 )); then
+        return
+    fi
+    docker login hub.juniper.net \
+            --username $registry_username \
+            --password $registry_password
+    docker pull $image
+}
+
+launch_deployer()
+{
+    echo "Launch deployer..."
+    docker ps | grep $contrail_deployer > /dev/null 2>&1
+    if (( $? == 0 )); then
+        return
+    fi
+    docker run -td --net host --name contrail_kolla_ansible_deployer \
+            $contrail_deployer_image
+}
+
+build_instances_yaml()
+{
+    cat << __EOF__ > instances.yaml
+provider_config:
+  bms:
+    ssh_user: $aio_username
+    ssh_pwd: $aio_password
+    ntpserver: $ntp_server
+    domainsuffix: aio
+instances:
+  aio:
+    provider: bms
+    ip: $aio_address
+    roles:
+      config_database:
+      config:
+      control:
+      analytics:
+      analytics_alarm:
+      analytics_snmp:
+      analytics_database:
+      webui:
+      dhcp:
+      openstack:
+global_configuration:
+  CONTAINER_REGISTRY: $registry_url
+  CONTAINER_REGISTRY_USERNAME: $registry_username
+  CONTAINER_REGISTRY_PASSWORD: $registry_password
+contrail_configuration:
+  CONTRAIL_VERSION: $contrail_version
+  CONTRAIL_CONTAINER_TAG: $contrail_version
+  CLOUD_ORCHESTRATOR: none
+  ENCAP_PRIORITY: VXLAN,MPLSoUDP,MPLSoGRE
+  CONFIG_DATABASE_NODEMGR__DEFAULTS__minimum_diskGB: 20
+  DATABASE_NODEMGR__DEFAULTS__minimum_diskGB: 20
+  AAA_MODE: no-auth
+kolla_config:
+  kolla_globals:
+    enable_haproxy: no
+    enable_ironic: no
+    enable_swift: no
+  kolla_passwords:
+    keystone_admin_password: contrail123
+__EOF__
+}
+
+check_playbook_result()
+{
+    local rc_list
+    local rc
+
+    rc_list=$(tail -n 80 aio.log | grep -A 30 "PLAY RECAP" | \
+            awk "/failed/"'{print $6}')
+    for rc in $rc_list; do
+        if [ "$rc" != "failed=0" ]; then return 1; fi
+    done
+}
+
+patch_playbook()
+{
+    # This is for 1912.32.
+    dst=/root/contrail-kolla-ansible/ansible/deregister_compute.yml
+    docker cp deregister_compute.yml contrail_kolla_ansible_deployer:$dst
+}
+
+run_playbook()
+{
+    local pb_list=$1
+    local dst
+
+    exec > >(tee aio.log)
+    exec 2>&1
+    echo "Deploy..."
+
+    build_instances_yaml
+    dst=/root/contrail-ansible-deployer/config/instances.yaml
+    docker cp instances.yaml contrail_kolla_ansible_deployer:$dst
+    for pb in $pb_list; do
+        echo "Run playbook $pb..."
+        docker exec contrail_kolla_ansible_deployer bash -c \
+                "cd /root/contrail-ansible-deployer;
+                 ansible-playbook -i inventory playbooks/$pb"
+        check_playbook_result; if (( $? )); then return 1; fi
+    done
+}
+
+build_command_conf()
+{
+    cat << __EOF__ > command_servers.yml
+---
+command_servers:
+    server1:
+        ip: $aio_address
+        connection: ssh
+        ssh_user: $aio_username
+        ssh_pass: $aio_password
+        sudo_pass: $aio_password
+        ntpserver: $ntp_server
+
+        container_registry: $registry_url
+        registry_insecure: false
+        container_tag: "$contrail_version"
+        container_registry_username: $registry_username
+        container_registry_password: $registry_password
+
+        config_dir: /etc/contrail
+
+        contrail_config:
+            database:
+                password: contrail123
+            no_auth: true
+            insecure: true
+            client:
+              password: contrail123
+__EOF__
+}
+
+check_command()
+{
+    local rc_list
+    local rc
+
+    let "count = 2"
+    while (( $count > 0  )); do
+        sleep 10
+        echo "Check Contrail Command Deployer..."
+        docker logs --tail 10 contrail_command_deployer | \
+                grep "PLAY RECAP" > /dev/null 2>&1
+        if (( "$?" == "0" )); then
+            let "count -= 1"
+        fi
+    done
+
+    docker logs --tail 10 contrail_command_deployer | \
+            grep -A 10 "PLAY RECAP" | awk "/failed/"'{print}'
+}
+
+launch_command()
+{
+    build_command_conf
+    docker run -t --net host -d --privileged \
+            -e orchestrator=openstack \
+            -e action=import_cluster \
+            -v /root/instances.yaml:/instances.yml \
+            -v /root/command_servers.yml:/command_servers.yml \
+            --name contrail_command_deployer \
+            $command_deployer_image
+    check_command
+    systemctl status iptables > /dev/null 2>&1
+    if (( $? == 0 )); then
+        systemctl stop iptables
+        systemctl disable iptables
+    fi
+}
+
+delete_command()
+{
+    local vol=$(docker inspect -f '{{ (index .Mounts 0).Name }}' contrail_psql)
+
+    docker stop contrail_command
+    docker stop contrail_psql
+    docker rm contrail_command
+    docker rm contrail_psql
+    docker rm contrail_command_deployer
+    docker volume rm $vol
+}
+
+build()
+{
+    echo "Build AIO..."
+    install_docker
+    pull_image "$contrail_deployer_image"
+    launch_deployer
+    run_playbook "configure_instances.yml
+            install_openstack.yml
+            install_contrail.yml"
+
+    pull_image "$command_deployer_image"
+    #launch_command
+}
+
+main()
+{
+    get_aio_address
+
+    case "$1" in
+        build)
+            build
+            ;;
+        launch-command)
+            launch_command
+            ;;
+        delete-command)
+            delete_command
+            ;;
+        *)
+            help
+            ;;
+    esac
+}
+
+main "$@"
+exit 0
+

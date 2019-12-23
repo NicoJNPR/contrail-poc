@@ -1,0 +1,49 @@
+
+cluster_br_list="br-int"
+
+server_list="aio"
+
+
+launch_builder()
+{
+    echo "Launch builder..."
+}
+
+delete_builder()
+{
+    echo "Delete builder..."
+}
+
+pre_cluster()
+{
+    echo "Pre-Deployment"
+    #upgrade_kernel
+}
+
+build_aio_script()
+{
+    echo "Build AIO script..."
+    sed -e "s|__registry_username__|$registry_username|" \
+        -e "s|__registry_password__|$registry_password|" \
+        -e "s|__contrail_version__|$contrail_version|" \
+        cluster/$poc_cluster/aio > cluster/$poc_cluster/aio.sh
+    chmod +x cluster/$poc_cluster/aio.sh
+}
+
+deploy()
+{
+    local arr=(${vm_address_list[aio]})
+    local host=${arr[0]}
+
+    #copy_ssh_key $host
+    build_aio_script
+    scp cluster/$poc_cluster/aio.sh $host:./aio
+    #ssh $host "./aio"
+}
+
+post_cluster()
+{
+    echo "Post-Deployment"
+    configure_haproxy
+}
+
