@@ -357,6 +357,7 @@ initialize_vqfx()
 #    done
     ssh $host "cli -c 'configure; $sets; commit'"
 
+    echo "Upload factory configuration."
     file=vqfx-10000-factory.conf
     ssh $host "rm -f /etc/config/$file"
     scp underlay/$file  $host:/etc/config/$file
@@ -436,6 +437,7 @@ zeroize_vqfx()
     local port=$((6000 + $port_offset))
     local no_wait=$2
 
+    clear
     (
     sleep 1; echo "root"
     sleep 1; echo "Juniper"
@@ -744,6 +746,7 @@ check_playbook_result()
 
 copy_ssh_key()
 {
+    echo "Copy SSH key..."
     scp ~/.ssh/id_rsa ~/.ssh/id_rsa.pub ~/.ssh/config $1:/root/.ssh/
 }
 
