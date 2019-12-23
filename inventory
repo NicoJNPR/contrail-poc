@@ -9,99 +9,120 @@ declare -A vm_nic_model
 declare -A vm_disk_bus
 declare -A vm_spec_arg
 
-vm_role[centos]=centos
-vm_os[centos]=centos
-vm_address_list[centos]="10.6.8.100"
-vm_netmask_list[centos]="255.255.255.0"
-vm_gateway_list[centos]="10.6.8.254"
-vm_nic_list[centos]="br=br-int"
+name=centos
+vm_role[$name]=centos
+vm_os[$name]=centos
+vm_address_list[$name]="10.6.8.100"
+vm_netmask_list[$name]="255.255.255.0"
+vm_gateway_list[$name]="10.6.8.254"
+vm_nic_list[$name]="br=br-int"
 
-vm_role[contrail-1]=contrail
-vm_os[contrail-1]=centos
-vm_address_list[contrail-1]="10.6.8.1        10.6.11.1"
-vm_netmask_list[contrail-1]="255.255.255.0   255.255.255.0"
-vm_gateway_list[contrail-1]="10.6.8.254      null"
-vm_nic_list[contrail-1]="br=br-int br=br-r1"
+name=aio
+vm_role[$name]=aio
+vm_os[$name]=centos
+vm_address_list[$name]="10.6.8.99"
+vm_netmask_list[$name]="255.255.255.0"
+vm_gateway_list[$name]="10.6.8.254"
+vm_nic_list[$name]="br=br-int"
 
-vm_role[contrail-2]=contrail
-vm_os[contrail-2]=centos
-vm_address_list[contrail-2]="10.6.8.3        10.6.11.3"
-vm_netmask_list[contrail-2]="255.255.255.0   255.255.255.0"
-vm_gateway_list[contrail-2]="10.6.8.254      null"
-vm_nic_list[contrail-2]="br=br-int br=br-r1"
+name=contrail-1
+vm_role[$name]=contrail
+vm_os[$name]=centos
+vm_address_list[$name]="10.6.8.1        10.6.11.1"
+vm_netmask_list[$name]="255.255.255.0   255.255.255.0"
+vm_gateway_list[$name]="10.6.8.254      null"
+vm_nic_list[$name]="br=br-int br=br-r1"
 
-vm_role[contrail-3]=contrail
-vm_os[contrail-3]=centos
-vm_address_list[contrail-3]="10.6.8.5        10.6.11.5"
-vm_netmask_list[contrail-3]="255.255.255.0   255.255.255.0"
-vm_gateway_list[contrail-3]="10.6.8.254      null"
-vm_nic_list[contrail-3]="br=br-int br=br-r1"
+name=contrail-2
+vm_role[$name]=contrail
+vm_os[$name]=centos
+vm_address_list[$name]="10.6.8.3        10.6.11.3"
+vm_netmask_list[$name]="255.255.255.0   255.255.255.0"
+vm_gateway_list[$name]="10.6.8.254      null"
+vm_nic_list[$name]="br=br-int br=br-r1"
 
-vm_role[openstack-1]=openstack
-vm_os[openstack-1]=centos
-vm_address_list[openstack-1]="10.6.8.2        10.6.11.2"
-vm_netmask_list[openstack-1]="255.255.255.0   255.255.255.0"
-vm_gateway_list[openstack-1]="10.6.8.254      null"
-vm_nic_list[openstack-1]="br=br-int br=br-r1"
+name=contrail-3
+vm_role[$name]=contrail
+vm_os[$name]=centos
+vm_address_list[$name]="10.6.8.5        10.6.11.5"
+vm_netmask_list[$name]="255.255.255.0   255.255.255.0"
+vm_gateway_list[$name]="10.6.8.254      null"
+vm_nic_list[$name]="br=br-int br=br-r1"
 
-vm_role[openstack-2]=openstack
-vm_os[openstack-2]=centos
-vm_address_list[openstack-2]="10.6.8.4        10.6.11.4"
-vm_netmask_list[openstack-2]="255.255.255.0   255.255.255.0"
-vm_gateway_list[openstack-2]="10.6.8.254      null"
-vm_nic_list[openstack-2]="br=br-int br=br-r1"
+name=openstack-1
+vm_role[$name]=openstack
+vm_os[$name]=centos
+vm_address_list[$name]="10.6.8.2        10.6.11.2"
+vm_netmask_list[$name]="255.255.255.0   255.255.255.0"
+vm_gateway_list[$name]="10.6.8.254      null"
+vm_nic_list[$name]="br=br-int br=br-r1"
 
-vm_role[openstack-3]=openstack
-vm_os[openstack-3]=centos
-vm_address_list[openstack-3]="10.6.8.6        10.6.11.6"
-vm_netmask_list[openstack-3]="255.255.255.0   255.255.255.0"
-vm_gateway_list[openstack-3]="10.6.8.254      null"
-vm_nic_list[openstack-3]="br=br-int br=br-r1"
+name=openstack-2
+vm_role[$name]=openstack
+vm_os[$name]=centos
+vm_address_list[$name]="10.6.8.4        10.6.11.4"
+vm_netmask_list[$name]="255.255.255.0   255.255.255.0"
+vm_gateway_list[$name]="10.6.8.254      null"
+vm_nic_list[$name]="br=br-int br=br-r1"
 
-vm_role[csn-1]=csn
-vm_os[csn-1]=centos
-vm_address_list[csn-1]="10.6.8.3       10.6.11.3"
-vm_netmask_list[csn-1]="255.255.255.0   255.255.255.0"
-vm_gateway_list[csn-1]="10.6.8.254      null"
-vm_nic_list[csn-1]="br=br-int br=br-r1"
+name=openstack-3
+vm_role[$name]=openstack
+vm_os[$name]=centos
+vm_address_list[$name]="10.6.8.6        10.6.11.6"
+vm_netmask_list[$name]="255.255.255.0   255.255.255.0"
+vm_gateway_list[$name]="10.6.8.254      null"
+vm_nic_list[$name]="br=br-int br=br-r1"
 
-vm_role[csn-r1]=csn
-vm_os[csn-r1]=centos
-vm_address_list[csn-r1]="10.6.8.4        10.6.12.4"
-vm_netmask_list[csn-r1]="255.255.255.0   255.255.255.0"
-vm_gateway_list[csn-r1]="10.6.8.254      null"
-vm_nic_list[csn-r1]="br=br-int br=br-r2"
+name=csn-1
+vm_role[$name]=csn
+vm_os[$name]=centos
+vm_address_list[$name]="10.6.8.3       10.6.11.3"
+vm_netmask_list[$name]="255.255.255.0   255.255.255.0"
+vm_gateway_list[$name]="10.6.8.254      null"
+vm_nic_list[$name]="br=br-int br=br-r1"
 
-vm_role[control-r1]=control
-vm_os[control-r1]=centos
-vm_address_list[control-r1]="10.6.8.6       10.6.11.6"
-vm_netmask_list[control-r1]="255.255.255.0   255.255.255.0"
-vm_gateway_list[control-r1]="10.6.8.254      null"
-vm_nic_list[control-r1]="br=br-int br=br-r1"
+name=csn-r1
+vm_role[$name]=csn
+vm_os[$name]=centos
+vm_address_list[$name]="10.6.8.4        10.6.12.4"
+vm_netmask_list[$name]="255.255.255.0   255.255.255.0"
+vm_gateway_list[$name]="10.6.8.254      null"
+vm_nic_list[$name]="br=br-int br=br-r2"
 
-vm_role[compute-1]=compute
-vm_os[compute-1]=centos
-vm_address_list[compute-1]="10.6.8.7        10.6.11.7"
-vm_netmask_list[compute-1]="255.255.255.0   255.255.255.0"
-vm_gateway_list[compute-1]="10.6.8.254      null"
-vm_nic_list[compute-1]="br=br-int br=br-r1"
-vm_spec_arg[compute-1]="--cpu host"
+name=control-r1
+vm_role[$name]=control
+vm_os[$name]=centos
+vm_address_list[$name]="10.6.8.6       10.6.11.6"
+vm_netmask_list[$name]="255.255.255.0   255.255.255.0"
+vm_gateway_list[$name]="10.6.8.254      null"
+vm_nic_list[$name]="br=br-int br=br-r1"
 
-vm_role[compute-r1]=compute
-vm_os[compute-r1]=centos
-vm_address_list[compute-r1]="10.6.8.8        10.6.12.8"
-vm_netmask_list[compute-r1]="255.255.255.0   255.255.255.0"
-vm_gateway_list[compute-r1]="10.6.8.254      null"
-vm_nic_list[compute-r1]="br=br-int br=br-r2"
-vm_spec_arg[compute-r1]="--cpu host"
+name=compute-1
+vm_role[$name]=compute
+vm_os[$name]=centos
+vm_address_list[$name]="10.6.8.7        10.6.11.7"
+vm_netmask_list[$name]="255.255.255.0   255.255.255.0"
+vm_gateway_list[$name]="10.6.8.254      null"
+vm_nic_list[$name]="br=br-int br=br-r1"
+vm_spec_arg[$name]="--cpu host"
 
-vm_role[compute-2]=compute
-vm_os[compute-2]=centos
-vm_address_list[compute-2]="10.6.8.8        10.6.11.8"
-vm_netmask_list[compute-2]="255.255.255.0   255.255.255.0"
-vm_gateway_list[compute-2]="10.6.8.254      null"
-vm_nic_list[compute-2]="br=br-int br=br-r1"
-vm_spec_arg[compute-2]="--cpu host"
+name=compute-r1
+vm_role[$name]=compute
+vm_os[$name]=centos
+vm_address_list[$name]="10.6.8.8        10.6.12.8"
+vm_netmask_list[$name]="255.255.255.0   255.255.255.0"
+vm_gateway_list[$name]="10.6.8.254      null"
+vm_nic_list[$name]="br=br-int br=br-r2"
+vm_spec_arg[$name]="--cpu host"
+
+name=compute-2
+vm_role[$name]=compute
+vm_os[$name]=centos
+vm_address_list[$name]="10.6.8.8        10.6.11.8"
+vm_netmask_list[$name]="255.255.255.0   255.255.255.0"
+vm_gateway_list[$name]="10.6.8.254      null"
+vm_nic_list[$name]="br=br-int br=br-r1"
+vm_spec_arg[$name]="--cpu host"
 
 vm_role[contrail-c2-1]=contrail
 vm_os[contrail-c2-1]=centos
@@ -231,17 +252,19 @@ vm_netmask_list[mc-gw]="255.255.255.0   255.255.255.0"
 vm_gateway_list[mc-gw]="10.6.8.254      null"
 vm_nic_list[mc-gw]="br=br-int br=br-r2"
 
-vm_role[command]=compute
-vm_os[command]=centos
-vm_address_list[command]="10.6.8.91       10.6.11.91"
-vm_netmask_list[command]="255.255.255.0   255.255.255.0"
-vm_gateway_list[command]="10.6.8.254      null"
-vm_nic_list[command]="br=br-int br=br-r1"
+name=command
+vm_role[$name]=compute
+vm_os[$name]=centos
+vm_address_list[$name]="10.6.8.91       10.6.11.91"
+vm_netmask_list[$name]="255.255.255.0   255.255.255.0"
+vm_gateway_list[$name]="10.6.8.254      null"
+vm_nic_list[$name]="br=br-int br=br-r1"
 
-vm_role[appformix-1]=appformix
-vm_os[appformix-1]=centos
-vm_address_list[appformix-1]="10.6.8.71       10.6.11.71"
-vm_netmask_list[appformix-1]="255.255.255.0   255.255.255.0"
-vm_gateway_list[appformix-1]="10.6.8.254      null"
-vm_nic_list[appformix-1]="br=br-int br=br-r1"
+name=appformix-1
+vm_role[$name]=appformix
+vm_os[$name]=centos
+vm_address_list[$name]="10.6.8.71       10.6.11.71"
+vm_netmask_list[$name]="255.255.255.0   255.255.255.0"
+vm_gateway_list[$name]="10.6.8.254      null"
+vm_nic_list[$name]="br=br-int br=br-r1"
 
