@@ -346,12 +346,6 @@ launch_vm()
     role_name=${vm_role[$name]}
     echo "Launch $name with role $role_name..."
     case "$role_name" in
-        contrail | openstack | csn | compute | master | appformix | control )
-            vm_os_arg="--os-variant centos7.0"
-            build_vm_image $name $image_path/$image_centos $role_name
-            customize_vm_centos $name
-            create_vm $name $role_name
-        ;;
         centos )
             vm_os_arg="--os-variant centos7.0"
             build_vm_image $name $image_path/$image_centos $role_name
@@ -402,9 +396,15 @@ launch_vm()
             create_vm $name $role_name
         ;;
         * )
-            echo "ERROR: Role $role_name is not supported!"
-            return 1
+            vm_os_arg="--os-variant centos7.0"
+            build_vm_image $name $image_path/$image_centos $role_name
+            customize_vm_centos $name
+            create_vm $name $role_name
         ;;
+        #* )
+        #    echo "ERROR: Role $role_name is not supported!"
+        #    return 1
+        #;;
     esac
 }
 
