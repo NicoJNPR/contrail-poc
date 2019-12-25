@@ -1,0 +1,29 @@
+#!/bin/bash
+
+template=/opt/contrail/fabric_ansible_playbooks/roles/ztp_dhcp_config/templates/dnsmasq.conf.j2
+
+pull()
+{
+    docker cp config_devicemgr_1:$template ./
+}
+
+push()
+{
+    docker cp dnsmasq.conf.j2 config_devicemgr_1:$template
+}
+
+main()
+{
+    case "$1" in
+        pull)
+            pull
+            ;;
+        push)
+            push
+            ;;
+    esac
+}
+
+main "$@"
+exit 0
+

@@ -1,0 +1,49 @@
+
+cluster_br_list="br-int"
+
+server_list="bootstrap"
+
+
+launch_builder()
+{
+    echo "Launch builder..."
+}
+
+delete_builder()
+{
+    echo "Delete builder..."
+}
+
+pre_cluster()
+{
+    echo "Pre-Deployment"
+    #upgrade_kernel
+}
+
+build_bootstrap_script()
+{
+    echo "Build bootstrap script..."
+    sed -e "s|__registry_username__|$registry_username|" \
+        -e "s|__registry_password__|$registry_password|" \
+        -e "s|__contrail_version__|$contrail_version|" \
+        cluster/$poc_cluster/bootstrap > /tmp/bootstrap
+    chmod +x /tmp/bootstrap
+}
+
+deploy()
+{
+    local arr=(${vm_address_list[bootstrap]})
+    local host=${arr[0]}
+
+    #copy_ssh_key $host
+    build_bootstrap_script
+    scp /tmp/bootstrap $host:./bootstrap
+    #ssh $host "./bootstrap"
+}
+
+post_cluster()
+{
+    echo "Post-Deployment"
+    configure_haproxy
+}
+

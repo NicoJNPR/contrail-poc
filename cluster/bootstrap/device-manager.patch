@@ -1,0 +1,11 @@
+- /usr/lib/python2.7/site-packages/device_manager/device_ztp_manager.py.orig
++ /usr/lib/python2.7/site-packages/device_manager/device_ztp_manager.py
+@@ -295,6 +295,7 @@
+ 
+     @staticmethod
+     def _within_ztp_devices(host_name, device_to_ztp):
++        return True
+         if not device_to_ztp or host_name == "*":
+             return True
+         return any([
+
