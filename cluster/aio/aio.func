@@ -17,7 +17,7 @@ delete_builder()
 pre_cluster()
 {
     echo "Pre-Deployment"
-    #upgrade_kernel
+    upgrade_kernel
 }
 
 build_aio_script()
@@ -26,8 +26,8 @@ build_aio_script()
     sed -e "s|__registry_username__|$registry_username|" \
         -e "s|__registry_password__|$registry_password|" \
         -e "s|__contrail_version__|$contrail_version|" \
-        cluster/$poc_cluster/aio > cluster/$poc_cluster/aio.sh
-    chmod +x cluster/$poc_cluster/aio.sh
+        cluster/$poc_cluster/aio > /tmp/aio
+    chmod +x /tmp/aio
 }
 
 deploy()
@@ -37,7 +37,7 @@ deploy()
 
     #copy_ssh_key $host
     build_aio_script
-    scp cluster/$poc_cluster/aio.sh $host:./aio
+    scp /tmp/aio $host:.
     #ssh $host "./aio"
 }
 
