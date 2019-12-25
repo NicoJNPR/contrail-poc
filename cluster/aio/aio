@@ -45,7 +45,7 @@ pull_image()
     local image=$1
 
     echo "Pull $image..."
-    docker image list | grep $contrail_deployer > /dev/null 2>&1
+    docker image list | grep $image > /dev/null 2>&1
     if (( $? == 0 )); then
         return
     fi
@@ -89,7 +89,9 @@ instances:
       analytics_database:
       webui:
       dhcp:
+      vrouter:
       openstack:
+      openstack_compute:
 global_configuration:
   CONTAINER_REGISTRY: $registry_url
   CONTAINER_REGISTRY_USERNAME: $registry_username
@@ -97,7 +99,8 @@ global_configuration:
 contrail_configuration:
   CONTRAIL_VERSION: $contrail_version
   CONTRAIL_CONTAINER_TAG: $contrail_version
-  CLOUD_ORCHESTRATOR: none
+  CLOUD_ORCHESTRATOR: openstack
+  OPENSTACK_VERSION: queens
   ENCAP_PRIORITY: VXLAN,MPLSoUDP,MPLSoGRE
   CONFIG_DATABASE_NODEMGR__DEFAULTS__minimum_diskGB: 20
   DATABASE_NODEMGR__DEFAULTS__minimum_diskGB: 20
@@ -176,10 +179,47 @@ command_servers:
         contrail_config:
             database:
                 password: contrail123
+            server:
+                address: ":9098"
+            keystone:
+                local: true
+                assignment:
+                    type: static
+                    data:
+                      domains:
+                        default: &default
+                          id: default
+                          name: default
+                      projects:
+                        admin: &admin
+                          id: admin
+                          name: admin
+                          domain: *default
+                      users:
+                        admin:
+                          id: admin
+                          name: admin
+                          domain: *default
+                          password: contrail123
+                          email: admin@juniper.nets
+                          roles:
+                          - id: admin
+                            name: admin
+                            project: *admin
+                store:
+                    type: memory
+                    expire: 3600
+                insecure: true
+                authurl: https://localhost:9098/keystone/v3
             no_auth: true
             insecure: true
             client:
+              id: admin
               password: contrail123
+              project_id: admin
+              domain_id: default
+              schema_root: /
+              endpoint: https://localhost:9098
 __EOF__
 }
 
