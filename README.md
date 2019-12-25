@@ -564,6 +564,8 @@ Total                                   17     112    200
 10.6.8.71   appformix-1
 10.6.8.81   mc-gw
 10.6.8.91   command
+10.6.8.95   bootstrap
+10.6.8.96   aio
 ```
 
 
