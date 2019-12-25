@@ -431,9 +431,10 @@ wait_for_vqfx_zero()
 
 zeroize_vqfx()
 {
-    local arr=(${vm_address_list[$1-re]})
+    local name=$1
+    local arr=(${vm_address_list[$name-re]})
     local host=${arr[0]}
-    local port_offset=$(get_vm_console_port "$1-re")
+    local port_offset=$(get_vm_console_port "$name-re")
     local port=$((6000 + $port_offset))
     local no_wait=$2
 
@@ -447,8 +448,10 @@ zeroize_vqfx()
     ) | telnet 127.0.0.1 $port
 
     if [ -z "$no_wait" ]; then
-        wait_for_vqfx_zero $1
+        sleep 10
+        wait_for_vqfx_zero $name
     fi
+    echo "$name: $(get_serial_num $name)"
 }
 
 zeroize_vqfx_all()
@@ -721,11 +724,21 @@ upload_instances_yaml()
 
 upgrade_kernel()
 {
+    local arr
+    local host
+
     for name in $server_list; do
         echo "Upgrade kernel on $name..."
         arr=(${vm_address_list[$name]})
-        ssh ${arr[0]} "yum upgrade -y kernel"
-        ssh ${arr[0]} "reboot"
+        host=${arr[0]}
+        if [ -e /opt/kernel ]; then
+            scp -r /opt/kernel $host:.
+            ssh $host "yum install -y kernel/*.rpm"
+            ssh $host "rm -fr kernel"
+        else
+            ssh $host "yum upgrade -y kernel"
+        fi
+        ssh $host "reboot"
     done
     for name in $server_list; do
         wait_for_host $name
