@@ -1,0 +1,97 @@
+#!/bin/bash
+
+# These patches are for supporting vqfx and validated with 1912.32.
+patch_dnsmasq_conf()
+{
+    if [ ! -e /tmp/mac-ip ]; then
+        return
+    fi
+    path=/opt/contrail/fabric_ansible_playbooks/roles/ztp_dhcp_config/templates
+    file=dnsmasq.conf.j2
+    docker cp config_devicemgr_1:$path/$file /tmp
+    cat /tmp/mac-ip >> /tmp/$file
+    docker cp /tmp/$file config_devicemgr_1:$path/$file
+}
+
+patch_ztp_manager()
+{
+    path=/usr/lib/python2.7/site-packages/device_manager
+    file=device_ztp_manager.py
+    docker cp config_devicemgr_1:$path/$file /tmp
+
+    cat << __EOF__ > /tmp/dm.patch
+@@ -295,6 +295,7 @@
+
+     @staticmethod
+     def _within_ztp_devices(host_name, device_to_ztp):
++        return True
+         if not device_to_ztp or host_name == "*":
+             return True
+         return any([
+__EOF__
+
+    patch /tmp/$file /tmp/dm.patch
+    docker cp /tmp/$file config_devicemgr_1:$path/$file
+}
+
+patch_import_chassis_info()
+{
+    path=/opt/contrail/fabric_ansible_playbooks/roles/import_chassis_info/tasks
+    file=juniper.yml
+    docker cp config_devicemgr_1:$path/$file /tmp
+
+    cat << __EOF__ > /tmp/dm.patch
+@@ -4,7 +4,7 @@
+ - name: IMPORT CHASSIS INFO
+   juniper_junos_command:
+     commands:
+-      - show chassis mac-addresses
++      - show lldp local-information
+     display: xml
+     provider:
+       host: "{{host}}"
+__EOF__
+
+    patch /tmp/$file /tmp/dm.patch
+    docker cp /tmp/$file config_devicemgr_1:$path/$file
+
+    path=/opt/contrail/fabric_ansible_playbooks/roles/import_chassis_info/templates
+    file=juniper.j2
+
+    cat << __EOF__ > /tmp/$file
+{%- set lldp_local_info = device_info.parsed_output %}
+{%- set chassis_mac_ids = [] %}
+{%- macro add_mac_address_info(chassis_str, chassis_type="") %}
+{%-     set match_groups = chassis_str | regex_findall('([A-Fa-f0-9]{2}(:{1}[A-Fa-f0-9]{2}){5})') %}
+{%-     for match_group in match_groups %}
+{%-         set chassis_mac_add_info = {"device_chassis_id": match_group[0] } %}
+{%-         if chassis_type %}
+{%-             set x = chassis_mac_add_info.update({"chassis_id_type": chassis_type}) %}
+{%-         endif %}
+{%-         set x = chassis_mac_ids.append(chassis_mac_add_info) %}
+{%-     endfor %}
+{%- endmacro%}
+{%- if 'output' in lldp_local_info %}
+{#      If output key is present, it is assumed it is of type string #}
+{{      add_mac_address_info(lldp_local_info.output) }}
+{%- elif 'lldp-local-info' in lldp_local_info and 'lldp-local-chassis-id' in lldp_local_info['lldp-local-info'] %}
+{{      add_mac_address_info(lldp_local_info['lldp-local-info']['lldp-local-chassis-id']) }}
+{%- endif %}
+{
+    "device_chassis_id_info": {{chassis_mac_ids}}
+}
+__EOF__
+
+    docker cp /tmp/$file config_devicemgr_1:$path/$file
+}
+
+main()
+{
+    patch_ztp_manager
+    patch_import_chassis_info
+    patch_dnsmasq_conf
+}
+
+main "$@"
+exit 0
+
