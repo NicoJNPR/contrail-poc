@@ -1,0 +1,28 @@
+- resource_type: job
+  resource:
+    job_template_fq_name:
+    - default-global-system-config
+    - existing_fabric_onboard_template
+    input:
+      fabric_fq_name:
+      - default-global-system-config
+      - poc
+      device_auth:
+      - username: root
+        password: Juniper
+      overlay_ibgp_asn: 64512
+      loopback_subnets:
+      - 10.6.0.0/24
+      management_subnets:
+      - cidr: 10.6.8.11/32
+      node_profiles:
+      - node_profile_name: juniper-mx
+      - node_profile_name: juniper-qfx10k
+      - node_profile_name: juniper-qfx10k-lean
+      - node_profile_name: juniper-qfx5120
+      - node_profile_name: juniper-qfx5k
+      - node_profile_name: juniper-qfx5k-lean
+      - node_profile_name: juniper-srx
+      import_configured: false
+      enterprise_style: true
+

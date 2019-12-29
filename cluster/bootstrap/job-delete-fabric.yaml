@@ -1,0 +1,10 @@
+- resource_type: job
+  resource:
+    job_template_fq_name:
+    - default-global-system-config
+    - fabric_deletion_template
+    input:
+      fabric_fq_name:
+      - default-global-system-config
+      - poc
+

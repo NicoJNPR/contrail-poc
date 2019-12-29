@@ -1,0 +1,137 @@
+- resource_type: reference
+  operation: ADD
+  resource:
+    src_type: physical-router
+    src_fqn:
+    - default-global-system-config
+    - vqfx-leaf-1
+    dst:
+    - dst_type: overlay-role
+      dst_fqn:
+      - default-global-system-config
+      - crb-access
+      attr: null
+    - dst_type: physical-role
+      dst_fqn:
+      - default-global-system-config
+      - leaf
+      attr: null
+
+- resource_type: reference
+  operation: ADD
+  resource:
+    src_type: physical-router
+    src_fqn:
+    - default-global-system-config
+    - vqfx-leaf-2
+    dst:
+    - dst_type: overlay-role
+      dst_fqn:
+      - default-global-system-config
+      - crb-access
+      attr: null
+    - dst_type: physical-role
+      dst_fqn:
+      - default-global-system-config
+      - leaf
+      attr: null
+
+- resource_type: reference
+  operation: ADD
+  resource:
+    src_type: physical-router
+    src_fqn:
+    - default-global-system-config
+    - vqfx-leaf-3
+    dst:
+    - dst_type: overlay-role
+      dst_fqn:
+      - default-global-system-config
+      - crb-access
+      attr: null
+    - dst_type: physical-role
+      dst_fqn:
+      - default-global-system-config
+      - leaf
+      attr: null
+
+- resource_type: reference
+  operation: ADD
+  resource:
+    src_type: physical-router
+    src_fqn:
+    - default-global-system-config
+    - vqfx-leaf-4
+    dst:
+    - dst_type: overlay-role
+      dst_fqn:
+      - default-global-system-config
+      - crb-access
+      attr: null
+    - dst_type: physical-role
+      dst_fqn:
+      - default-global-system-config
+      - leaf
+      attr: null
+
+- resource_type: reference
+  operation: ADD
+  resource:
+    src_type: physical-router
+    src_fqn:
+    - default-global-system-config
+    - vqfx-spine-1
+    dst:
+    - dst_type: overlay-role
+      dst_fqn:
+      - default-global-system-config
+      - dc-gateway
+      attr: null
+    - dst_type: physical-role
+      dst_fqn:
+      - default-global-system-config
+      - spine
+      attr: null
+
+- resource_type: job
+  resource:
+    job_template_fq_name:
+    - default-global-system-config
+    - role_assignment_template
+    input:
+      fabric_fq_name:
+      - default-global-system-config
+      - poc
+      role_assignments:
+      - device_fq_name:
+        - default-global-system-config
+        - vqfx-spine-1
+        physical_role: spine
+        routing_bridging_roles:
+        - DC-Gateway
+        - Route-Reflector
+      - device_fq_name:
+        - default-global-system-config
+        - vqfx-leaf-1
+        physical_role: leaf
+        routing_bridging_roles:
+        - CRB-Access
+      - device_fq_name:
+        - default-global-system-config
+        - vqfx-leaf-2
+        physical_role: leaf
+        routing_bridging_roles:
+        - CRB-Access
+      - device_fq_name:
+        - default-global-system-config
+        - vqfx-leaf-3
+        physical_role: leaf
+        routing_bridging_roles:
+        - CRB-Access
+      - device_fq_name:
+        - default-global-system-config
+        - vqfx-leaf-4
+        physical_role: leaf
+        routing_bridging_roles:
+        - CRB-Access
+
