@@ -1,0 +1,287 @@
+
+underlay_br_list="br-int br-r1 br-r2 br-dummy br-ext
+    br-l1-int br-l2-int br-l3-int br-l4-int br-s1-int
+    br-s1-xe0 br-s1-xe1 br-s1-xe2 br-s1-xe3 br-s1-xe4 br-s1-xe5
+    br-s2-xe0 br-s2-xe1 br-s2-xe2 br-s2-xe3 br-s2-xe4 br-s2-xe5"
+
+underlay_veth_list="
+  l1-xe2,bms-dh1-1
+  l2-xe2,bms-dh1-2
+  l3-xe2,bms-dh2-1
+  l4-xe2,bms-dh2-2"
+
+vqfx_list="vqfx-leaf-1 vqfx-leaf-2 vqfx-leaf-3 vqfx-leaf-4 vqfx-spine-1"
+#vmx_list="vmx-1"
+bms_list="bms-dh-1 bms-dh-2"
+
+#####################################################
+name=vqfx-spine-1-re
+vm_role[$name]=vqfx-re
+vm_address_list[$name]="10.6.8.21"
+#vm_nic_list[$name]="br=br-int dir=s1-re-em1 br=br-dummy
+#    dir=s1-xe0 dir=s1-xe1 dir=s1-xe2"
+vm_nic_list[$name]="br=br-int br=br-s1-int br=br-dummy
+    br=br-s1-xe0 br=br-s1-xe1 br=br-s1-xe2 br=br-s1-xe3
+    br=br-s1-xe4 br=br-s1-xe5"
+
+name=vqfx-spine-1-pfe
+vm_role[$name]=vqfx-pfe
+vm_nic_model[$name]=e1000
+#vm_nic_list[$name]="br=br-dummy dir=s1-pfe-em1"
+vm_nic_list[$name]="br=br-dummy br=br-s1-int"
+
+name=vqfx-leaf-1-re
+vm_role[$name]=vqfx-re
+vm_address_list[$name]="10.6.8.11"
+#vm_nic_list[$name]="br=br-int dir=l1-re-em1 br=br-dummy
+#  dir=l1-xe0 dir=l1-xe1 dir=l1-xe2 br=br-r1"
+vm_nic_list[$name]="br=br-int br=br-l1-int br=br-dummy
+  br=br-s1-xe2 br=br-s2-xe2 dir=l1-xe2 br=br-r1"
+
+name=vqfx-leaf-1-pfe
+vm_role[$name]=vqfx-pfe
+vm_nic_model[$name]=e1000
+#vm_nic_list[$name]="br=br-dummy dir=l1-pfe-em1"
+vm_nic_list[$name]="br=br-dummy br=br-l1-int"
+
+name=vqfx-leaf-2-re
+vm_role[$name]=vqfx-re
+vm_address_list[$name]="10.6.8.12"
+#vm_nic_list[$name]="br=br-int dir=l2-re-em1 br=br-dummy
+#  dir=l2-xe0 dir=l2-xe1 dir=l2-xe2"
+vm_nic_list[$name]="br=br-int br=br-l2-int br=br-dummy
+  br=br-s1-xe3 br=br-s2-xe3 dir=l2-xe2 br=br-r2"
+
+name=vqfx-leaf-2-pfe
+vm_role[$name]=vqfx-pfe
+vm_nic_model[$name]=e1000
+#vm_nic_list[$name]="br=br-dummy dir=l2-pfe-em1"
+vm_nic_list[$name]="br=br-dummy br=br-l2-int"
+
+name=vqfx-leaf-3-re
+vm_role[$name]=vqfx-re
+vm_address_list[$name]="10.6.8.13"
+#vm_nic_list[$name]="br=br-int dir=l1-re-em1 br=br-dummy
+#  dir=l1-xe0 dir=l1-xe1 dir=l1-xe2 br=br-r1"
+vm_nic_list[$name]="br=br-int br=br-l3-int br=br-dummy
+  br=br-s1-xe4 br=br-s2-xe4 dir=l3-xe2"
+
+name=vqfx-leaf-3-pfe
+vm_role[$name]=vqfx-pfe
+vm_nic_model[$name]=e1000
+#vm_nic_list[$name]="br=br-dummy dir=l1-pfe-em1"
+vm_nic_list[$name]="br=br-dummy br=br-l3-int"
+
+name=vqfx-leaf-4-re
+vm_role[$name]=vqfx-re
+vm_address_list[$name]="10.6.8.14"
+#vm_nic_list[$name]="br=br-int dir=l1-re-em1 br=br-dummy
+#  dir=l1-xe0 dir=l1-xe1 dir=l1-xe2 br=br-r1"
+vm_nic_list[$name]="br=br-int br=br-l4-int br=br-dummy
+  br=br-s1-xe5 br=br-s2-xe5 dir=l4-xe2"
+
+name=vqfx-leaf-4-pfe
+vm_role[$name]=vqfx-pfe
+vm_nic_model[$name]=e1000
+#vm_nic_list[$name]="br=br-dummy dir=l1-pfe-em1"
+vm_nic_list[$name]="br=br-dummy br=br-l4-int"
+
+name=vmx-1-re
+vm_role[$name]=vmx-re
+vm_address_list[$name]="10.6.8.31"
+#vm_nic_list[$name]="br=br-int dir=gw1-re"
+vm_nic_list[$name]="br=br-int br=br-gw1-int"
+
+name=vmx-1-pfe
+vm_role[$name]=vmx-pfe
+vm_disk_bus[$name]=ide
+#vm_nic_list[$name]="br=br-dummy dir=gw1-pfe
+#  br=br-ext dir=gw1-ge1"
+vm_nic_list[$name]="br=br-dummy br=br-gw1-int
+  br=br-ext br=br-s1-xe0"
+
+#####################################################
+vm_role[bms-dh-1]=centos
+vm_nic_model[bms-dh-1]=e1000
+vm_nic_list[bms-dh-1]="dir=bms-dh1-1 dir=bms-dh1-2"
+
+vm_role[bms-dh-2]=centos
+vm_nic_model[bms-dh-2]=e1000
+vm_nic_list[bms-dh-2]="dir=bms-dh2-1 dir=bms-dh2-2"
+
+#####################################################
+configure_vmx_1()
+{
+    local arr=(${vm_address_list[vmx-1-re]})
+    local host=${arr[0]}
+
+    cat << __EOF__ > /tmp/conf
+set chassis fpc 0 pic 0 tunnel-services bandwidth 1g
+set interfaces lo0 unit 0 family inet address 10.6.0.31/32
+set interfaces ge-0/0/1 unit 0 family inet address 10.6.30.1/31
+set routing-options route-distinguisher-id 10.6.0.31
+set protocols bgp group fabric type external
+set protocols bgp group fabric family inet unicast
+set protocols bgp group fabric export direct
+set protocols bgp group fabric local-as 64031
+set protocols bgp group fabric neighbor 10.6.30.0 peer-as 64021
+set policy-options policy-statement direct term t1 from protocol direct
+set policy-options policy-statement direct term t1 then accept
+set snmp community public authorization read-only
+set protocols lldp interface all
+__EOF__
+
+    scp /tmp/conf $host:.
+    ssh $host "cli -c 'configure; load set conf; commit'"
+}
+
+configure_vqfx_spine_1()
+{
+    local arr=(${vm_address_list[vqfx-spine-1-re]})
+    local host=${arr[0]}
+
+    cat << __EOF__ > /tmp/conf
+set system services netconf ssh
+set interfaces lo0 unit 0 family inet address 10.6.0.21/32
+set interfaces xe-0/0/0 unit 0 family inet address 10.6.30.0/31
+set interfaces xe-0/0/2 unit 0 family inet address 10.6.20.0/31
+set interfaces xe-0/0/3 unit 0 family inet address 10.6.20.2/31
+set interfaces xe-0/0/4 unit 0 family inet address 10.6.20.4/31
+set interfaces xe-0/0/5 unit 0 family inet address 10.6.20.6/31
+set routing-options route-distinguisher-id 10.6.0.21
+set protocols bgp group fabric type external
+set protocols bgp group fabric family inet unicast
+set protocols bgp group fabric export direct
+set protocols bgp group fabric local-as 64021
+set protocols bgp group fabric neighbor 10.6.30.1 peer-as 64031
+set protocols bgp group fabric neighbor 10.6.20.1 peer-as 64011
+set protocols bgp group fabric neighbor 10.6.20.3 peer-as 64012
+set protocols bgp group fabric neighbor 10.6.20.5 peer-as 64013
+set protocols bgp group fabric neighbor 10.6.20.7 peer-as 64014
+set policy-options policy-statement direct term t1 from protocol direct
+set policy-options policy-statement direct term t1 then accept
+set snmp community public authorization read-only
+set protocols lldp interface all
+__EOF__
+
+    scp /tmp/conf $host:.
+    ssh $host "cli -c 'configure; load set conf; commit'"
+}
+
+configure_vqfx_leaf_1()
+{
+    local arr=(${vm_address_list[vqfx-leaf-1-re]})
+    local host=${arr[0]}
+
+    cat << __EOF__ > /tmp/conf
+set system services netconf ssh
+set interfaces lo0 unit 0 family inet address 10.6.0.11/32
+set interfaces xe-0/0/0 unit 0 family inet address 10.6.20.1/31
+set interfaces xe-0/0/3 unit 0 family ethernet-switching vlan members vlan-11
+set interfaces irb unit 11 family inet address 10.6.11.254/24
+set vlans vlan-11 vlan-id 11
+set vlans vlan-11 l3-interface irb.11
+set routing-options route-distinguisher-id 10.6.0.11
+set protocols bgp group fabric type external
+set protocols bgp group fabric family inet unicast
+set protocols bgp group fabric export direct
+set protocols bgp group fabric local-as 64011
+set protocols bgp group fabric neighbor 10.6.20.0 peer-as 64021
+set policy-options policy-statement direct term t1 from protocol direct
+set policy-options policy-statement direct term t1 then accept
+set snmp community public authorization read-only
+set protocols lldp interface all
+__EOF__
+
+    scp /tmp/conf $host:.
+    ssh $host "cli -c 'configure; load set conf; commit'"
+}
+
+configure_vqfx_leaf_2()
+{
+    local arr=(${vm_address_list[vqfx-leaf-2-re]})
+    local host=${arr[0]}
+
+    cat << __EOF__ > /tmp/conf
+set system services netconf ssh
+set interfaces lo0 unit 0 family inet address 10.6.0.12/32
+set interfaces xe-0/0/0 unit 0 family inet address 10.6.20.3/31
+set interfaces xe-0/0/3 unit 0 family ethernet-switching vlan members vlan-12
+set interfaces irb unit 12 family inet address 10.6.12.254/24
+set vlans vlan-12 vlan-id 12
+set vlans vlan-12 l3-interface irb.12
+set routing-options route-distinguisher-id 10.6.0.12
+set protocols bgp group fabric type external
+set protocols bgp group fabric family inet unicast
+set protocols bgp group fabric export direct
+set protocols bgp group fabric local-as 64012
+set protocols bgp group fabric neighbor 10.6.20.2 peer-as 64021
+set policy-options policy-statement direct term t1 from protocol direct
+set policy-options policy-statement direct term t1 then accept
+set snmp community public authorization read-only
+set protocols lldp interface all
+__EOF__
+
+    scp /tmp/conf $host:.
+    ssh $host "cli -c 'configure; load set conf; commit'"
+}
+
+configure_vqfx_leaf_3()
+{
+    local arr=(${vm_address_list[vqfx-leaf-3-re]})
+    local host=${arr[0]}
+
+    cat << __EOF__ > /tmp/conf
+set system services netconf ssh
+set interfaces lo0 unit 0 family inet address 10.6.0.13/32
+set interfaces xe-0/0/0 unit 0 family inet address 10.6.20.5/31
+set routing-options route-distinguisher-id 10.6.0.13
+set protocols bgp group fabric type external
+set protocols bgp group fabric family inet unicast
+set protocols bgp group fabric export direct
+set protocols bgp group fabric local-as 64013
+set protocols bgp group fabric neighbor 10.6.20.4 peer-as 64021
+set policy-options policy-statement direct term t1 from protocol direct
+set policy-options policy-statement direct term t1 then accept
+set snmp community public authorization read-only
+set protocols lldp interface all
+__EOF__
+
+    scp /tmp/conf $host:.
+    ssh $host "cli -c 'configure; load set conf; commit'"
+}
+
+configure_vqfx_leaf_4()
+{
+    local arr=(${vm_address_list[vqfx-leaf-4-re]})
+    local host=${arr[0]}
+
+    cat << __EOF__ > /tmp/conf
+set system services netconf ssh
+set interfaces lo0 unit 0 family inet address 10.6.0.14/32
+set interfaces xe-0/0/0 unit 0 family inet address 10.6.20.7/31
+set routing-options route-distinguisher-id 10.6.0.13
+set protocols bgp group fabric type external
+set protocols bgp group fabric family inet unicast
+set protocols bgp group fabric export direct
+set protocols bgp group fabric local-as 64014
+set protocols bgp group fabric neighbor 10.6.20.6 peer-as 64021
+set policy-options policy-statement direct term t1 from protocol direct
+set policy-options policy-statement direct term t1 then accept
+set snmp community public authorization read-only
+set protocols lldp interface all
+__EOF__
+
+    scp /tmp/conf $host:.
+    ssh $host "cli -c 'configure; load set conf; commit'"
+}
+
+post_underlay()
+{
+    echo "Post underlay deployment..."
+    ip link set dev macvtap0 promisc on
+    ip link set dev macvtap1 promisc on
+    ip link set dev macvtap2 promisc on
+    ip link set dev macvtap3 promisc on
+}
+
