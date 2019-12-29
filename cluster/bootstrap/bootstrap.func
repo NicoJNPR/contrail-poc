@@ -16,8 +16,12 @@ delete_builder()
 
 pre_cluster()
 {
+    local arr=(${vm_address_list[bootstrap]})
+    local host=${arr[0]}
+
     echo "Pre-Deployment"
     #upgrade_kernel
+    ssh $host yum install -y patch
 }
 
 build_bootstrap_script()
