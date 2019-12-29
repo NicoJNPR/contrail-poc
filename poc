@@ -363,7 +363,7 @@ initialize_vqfx()
     scp underlay/$file  $host:/etc/config/$file
 }
 
-get_serial_num()
+get_serial_number()
 {
     local port_offset=$(get_vm_console_port "$1-re")
     local port=$((6000 + $port_offset))
@@ -398,6 +398,18 @@ get_xe0()
     sleep 1; echo "cli -c 'show interface xe-0/0/0 terse'"
     sleep 1; echo exit
     ) | telnet 127.0.0.1 $port | awk "/xe-0\/0\/0.16386/"'{print $1}'
+}
+
+get_lldp_neighbor()
+{
+    local port=$1
+
+    (
+    sleep 1; echo "root"
+    sleep 1; echo "Juniper"
+    sleep 1; echo "cli -c 'show lldp neighbor'"
+    sleep 1; echo exit
+    ) | telnet 127.0.0.1 $port | awk "/xe-/"'{print $1}'
 }
 
 wait_for_vqfx_zero()
@@ -451,7 +463,28 @@ zeroize_vqfx()
         sleep 10
         wait_for_vqfx_zero $name
     fi
-    echo "$name: $(get_serial_num $name)"
+}
+
+check_lldp_neighbor()
+{
+    local name=$1
+    local arr=(${vm_address_list[$name-re]})
+    local host=${arr[0]}
+    local port_offset=$(get_vm_console_port "$name-re")
+    local port=$((6000 + $port_offset))
+
+    while (( 1 )); do
+        echo
+        echo "Check LLDP neighbor on $name..."
+        output=$(get_lldp_neighbor $port)
+        if [ -z $output ]; then
+            echo "No neighbor"
+        else
+            echo "Neighbor is on $output."
+            break
+        fi
+        sleep 5
+    done
 }
 
 zeroize_vqfx_all()
@@ -461,13 +494,44 @@ zeroize_vqfx_all()
     for name in $vqfx_list; do
         zeroize_vqfx $name no_wait
     done
-    echo "Waiting for 30 seconds..."
-    sleep 30
+    echo "Waiting for 10 seconds..."
+    sleep 10
     for name in $vqfx_list; do
         wait_for_vqfx_zero $name
     done
+
+    # Restart vqfx PFE to bring up LLDP.
     for name in $vqfx_list; do
-        echo "$name: $(get_serial_num $name)"
+        echo "Stop $name-pfe..."
+        virsh destroy $name-pfe
+    done
+    for name in $vqfx_list; do
+        echo "Start $name-pfe..."
+        virsh start $name-pfe
+    done
+    echo "Waiting for 30 seconds..."
+    sleep 30
+
+    # Check LLDP neighbor.
+    for name in $vqfx_list; do
+        check_lldp_neighbor $name
+    done
+
+    echo "Create job-create-fabirc.yaml..."
+    build_job_create_fabric_yaml
+}
+
+build_job_create_fabric_yaml()
+{
+    local file=job-create-fabric.yaml
+    local dst=../contrail-toolbox/config/$file
+
+    cp cluster/$poc_cluster/$file $dst
+    for name in $vqfx_list; do
+        sn=$(get_serial_number $name)
+        echo "      - serial_number: \"$sn\"" >> $dst
+        echo "        supplemental_day_0_cfg: cfg" >> $dst
+        echo "        hostname: $name" >> $dst
     done
 }
 
@@ -1147,7 +1211,7 @@ main()
             ;;
         get-serial)
             shift
-            if [ $1 ]; then get_serial_num "$@"
+            if [ $1 ]; then get_serial_number "$@"
             fi
             ;;
         *)
