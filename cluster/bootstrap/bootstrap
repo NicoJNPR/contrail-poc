@@ -101,6 +101,11 @@ contrail_configuration:
   CONFIG_DATABASE_NODEMGR__DEFAULTS__minimum_diskGB: 20
   DATABASE_NODEMGR__DEFAULTS__minimum_diskGB: 20
   AAA_MODE: no-auth
+  # With no-auth, config_dnsmasq_1 still needs these env vars.
+  KEYSTONE_AUTH_HOST: $host_address
+  KEYSTONE_AUTH_ADMIN_PASSWORD: contrail123
+  KEYSTONE_AUTH_ADMIN_USER: admin
+  KEYSTONE_AUTH_ADMIN_TENANT: admin
 __EOF__
 }
 
@@ -264,7 +269,7 @@ build()
     run_playbook "configure_instances.yml
             install_contrail.yml"
 
-    pull_image "$command_deployer_image"
+    #pull_image "$command_deployer_image"
     #launch_command
 }
 
