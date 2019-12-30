@@ -5,14 +5,18 @@ underlay_br_list="br-int br-r1 br-r2 br-dummy br-ext
     br-s2-xe0 br-s2-xe1 br-s2-xe2 br-s2-xe3 br-s2-xe4 br-s2-xe5"
 
 underlay_veth_list="
-  l1-xe2,bms-dh1-1
-  l2-xe2,bms-dh1-2
-  l3-xe2,bms-dh2-1
-  l4-xe2,bms-dh2-2"
+  l1-xe2,bms-dh11-1
+  l1-xe3,bms-dh12-1
+  l2-xe2,bms-dh11-2
+  l2-xe3,bms-dh12-2
+  l3-xe2,bms-dh21-1
+  l3-xe3,bms-dh22-1
+  l4-xe2,bms-dh21-2
+  l4-xe3,bms-dh22-2"
 
 vqfx_list="vqfx-leaf-1 vqfx-leaf-2 vqfx-leaf-3 vqfx-leaf-4 vqfx-spine-1"
 #vmx_list="vmx-1"
-bms_list="bms-dh-1 bms-dh-2"
+#bms_list="bms-dh-11 bms-dh-12 bms-dh-21 bms-dh-22"
 
 #####################################################
 name=vqfx-spine-1-re
@@ -36,7 +40,7 @@ vm_address_list[$name]="10.6.8.11"
 #vm_nic_list[$name]="br=br-int dir=l1-re-em1 br=br-dummy
 #  dir=l1-xe0 dir=l1-xe1 dir=l1-xe2 br=br-r1"
 vm_nic_list[$name]="br=br-int br=br-l1-int br=br-dummy
-  br=br-s1-xe2 br=br-s2-xe2 dir=l1-xe2 br=br-r1"
+  br=br-s1-xe2 br=br-s2-xe2 dir=l1-xe2 dir=l1-xe3 br=br-r1"
 
 name=vqfx-leaf-1-pfe
 vm_role[$name]=vqfx-pfe
@@ -50,7 +54,7 @@ vm_address_list[$name]="10.6.8.12"
 #vm_nic_list[$name]="br=br-int dir=l2-re-em1 br=br-dummy
 #  dir=l2-xe0 dir=l2-xe1 dir=l2-xe2"
 vm_nic_list[$name]="br=br-int br=br-l2-int br=br-dummy
-  br=br-s1-xe3 br=br-s2-xe3 dir=l2-xe2 br=br-r2"
+  br=br-s1-xe3 br=br-s2-xe3 dir=l2-xe2 dir=l2-xe3 br=br-r2"
 
 name=vqfx-leaf-2-pfe
 vm_role[$name]=vqfx-pfe
@@ -64,7 +68,7 @@ vm_address_list[$name]="10.6.8.13"
 #vm_nic_list[$name]="br=br-int dir=l1-re-em1 br=br-dummy
 #  dir=l1-xe0 dir=l1-xe1 dir=l1-xe2 br=br-r1"
 vm_nic_list[$name]="br=br-int br=br-l3-int br=br-dummy
-  br=br-s1-xe4 br=br-s2-xe4 dir=l3-xe2"
+  br=br-s1-xe4 br=br-s2-xe4 dir=l3-xe2 dir=l3-xe3"
 
 name=vqfx-leaf-3-pfe
 vm_role[$name]=vqfx-pfe
@@ -78,7 +82,7 @@ vm_address_list[$name]="10.6.8.14"
 #vm_nic_list[$name]="br=br-int dir=l1-re-em1 br=br-dummy
 #  dir=l1-xe0 dir=l1-xe1 dir=l1-xe2 br=br-r1"
 vm_nic_list[$name]="br=br-int br=br-l4-int br=br-dummy
-  br=br-s1-xe5 br=br-s2-xe5 dir=l4-xe2"
+  br=br-s1-xe5 br=br-s2-xe5 dir=l4-xe2 dir=l4-xe3"
 
 name=vqfx-leaf-4-pfe
 vm_role[$name]=vqfx-pfe
@@ -101,13 +105,25 @@ vm_nic_list[$name]="br=br-dummy br=br-gw1-int
   br=br-ext br=br-s1-xe0"
 
 #####################################################
-vm_role[bms-dh-1]=centos
-vm_nic_model[bms-dh-1]=e1000
-vm_nic_list[bms-dh-1]="dir=bms-dh1-1 dir=bms-dh1-2"
+name=bms-dh-11
+vm_role[$name]=centos
+vm_nic_model[$name]=e1000
+vm_nic_list[$name]="dir=bms-dh11-1 dir=bms-dh11-2"
 
-vm_role[bms-dh-2]=centos
-vm_nic_model[bms-dh-2]=e1000
-vm_nic_list[bms-dh-2]="dir=bms-dh2-1 dir=bms-dh2-2"
+name=bms-dh-12
+vm_role[$name]=centos
+vm_nic_model[$name]=e1000
+vm_nic_list[$name]="dir=bms-dh12-1 dir=bms-dh12-2"
+
+name=bms-dh-21
+vm_role[$name]=centos
+vm_nic_model[$name]=e1000
+vm_nic_list[$name]="dir=bms-dh21-1 dir=bms-dh21-2"
+
+name=bms-dh-22
+vm_role[$name]=centos
+vm_nic_model[$name]=e1000
+vm_nic_list[$name]="dir=bms-dh22-1 dir=bms-dh22-2"
 
 #####################################################
 configure_vmx_1()
@@ -177,7 +193,7 @@ configure_vqfx_leaf_1()
 set system services netconf ssh
 set interfaces lo0 unit 0 family inet address 10.6.0.11/32
 set interfaces xe-0/0/0 unit 0 family inet address 10.6.20.1/31
-set interfaces xe-0/0/3 unit 0 family ethernet-switching vlan members vlan-11
+set interfaces xe-0/0/4 unit 0 family ethernet-switching vlan members vlan-11
 set interfaces irb unit 11 family inet address 10.6.11.254/24
 set vlans vlan-11 vlan-id 11
 set vlans vlan-11 l3-interface irb.11
@@ -206,7 +222,7 @@ configure_vqfx_leaf_2()
 set system services netconf ssh
 set interfaces lo0 unit 0 family inet address 10.6.0.12/32
 set interfaces xe-0/0/0 unit 0 family inet address 10.6.20.3/31
-set interfaces xe-0/0/3 unit 0 family ethernet-switching vlan members vlan-12
+set interfaces xe-0/0/4 unit 0 family ethernet-switching vlan members vlan-12
 set interfaces irb unit 12 family inet address 10.6.12.254/24
 set vlans vlan-12 vlan-id 12
 set vlans vlan-12 l3-interface irb.12
