@@ -562,6 +562,9 @@ Total                                   17     112    200
 10.6.8.68   node-2         node-2      node-2        node-2
 
 10.6.8.71   appformix-1
+10.6.8.72   appformix-2
+10.6.8.73   appformix-3
+10.6.8.74   appformix-flow-1
 10.6.8.81   mc-gw
 10.6.8.91   command
 10.6.8.95   bootstrap
