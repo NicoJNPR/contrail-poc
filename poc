@@ -448,7 +448,7 @@ zeroize_vqfx()
     local host=${arr[0]}
     local port_offset=$(get_vm_console_port "$name-re")
     local port=$((6000 + $port_offset))
-    local no_wait=$2
+    local wait=$2
 
     clear
     (
@@ -459,7 +459,7 @@ zeroize_vqfx()
     sleep 1; echo "yes"
     ) | telnet 127.0.0.1 $port
 
-    if [ -z "$no_wait" ]; then
+    if [ -n "$wait" ]; then
         sleep 10
         wait_for_vqfx_zero $name
     fi
@@ -492,7 +492,7 @@ zeroize_vqfx_all()
     local name
 
     for name in $vqfx_list; do
-        zeroize_vqfx $name no_wait
+        zeroize_vqfx $name
     done
     echo "Waiting for 10 seconds..."
     sleep 10
@@ -788,25 +788,24 @@ upload_instances_yaml()
 
 upgrade_kernel()
 {
-    local arr
-    local host
+    local name=$1
+    local arr=(${vm_address_list[$name]})
+    local host=${arr[0]}
+    local wait=$2
 
-    for name in $server_list; do
-        echo "Upgrade kernel on $name..."
-        arr=(${vm_address_list[$name]})
-        host=${arr[0]}
-        if [ -e /opt/kernel ]; then
-            scp -r /opt/kernel $host:.
-            ssh $host "yum install -y kernel/*.rpm"
-            ssh $host "rm -fr kernel"
-        else
-            ssh $host "yum upgrade -y kernel"
-        fi
-        ssh $host "reboot"
-    done
-    for name in $server_list; do
+    echo "Upgrade kernel on $name..."
+    if [ -e /opt/kernel ]; then
+        scp -r /opt/kernel $host:.
+        ssh $host "yum install -y kernel/*.rpm"
+        ssh $host "rm -fr kernel"
+    else
+        ssh $host "yum upgrade -y kernel"
+    fi
+    ssh $host "reboot"
+
+    if [ -n "$wait" ]; then
         wait_for_host $name
-    done
+    fi
 }
 
 check_playbook_result()
@@ -937,7 +936,6 @@ install_command()
     scp poc.conf $host:.
     scp cluster/builder $host:.
     ssh $host "./builder install-command"
-    #scp cluster/contrail-command/command_servers.yml $host:.
     scp cluster/$poc_cluster/command_servers.yml $host:.
 }
 
@@ -1130,7 +1128,7 @@ main()
             ;;
         zeroize-vqfx)
             shift
-            if [ $1 ]; then zeroize_vqfx "$@"
+            if [ $1 ]; then zeroize_vqfx "$@" "wait"
             else zeroize_vqfx_all
             fi
             ;;
