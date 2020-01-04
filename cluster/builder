@@ -34,7 +34,7 @@ install_docker()
 {
     echo "Install Docker CE..."
 
-    rpm -q docker-ce-18.06.1.ce > /dev/null 2>&1
+    rpm -q docker-ce > /dev/null 2>&1
     if (( "$?" == "0" )); then
         return
     fi
@@ -232,15 +232,15 @@ check_command_prov()
     while (( "$count" > "0"  )); do
         sleep 10
         echo "Check Contrail Command provisioning..."
-        docker exec contrail_command tail -n 10 /var/log/ansible.log | \
-                grep "PLAY RECAP" > /dev/null 2>&1
+        tail -n 10 /var/log/ansible.log | grep "stop handling"
         if (( "$?" == "0" )); then
             let "count -= 1"
+        else
+            let "count = 2"
         fi
     done
 
-    docker exec contrail_command tail -n 10 /var/log/ansible.log | \
-            grep -A 10 "PLAY RECAP" | awk "/failed/"'{print}'
+    tail -n 10 /var/log/ansible.log | grep "up-to-date" > /dev/null 2>&1
 }
 
 launch_command()
@@ -250,20 +250,29 @@ launch_command()
     local action=$3
     local append=""
 
-    build_instances_yaml
     build_command_yaml "$host"
 
-    if [ -n "$4" ]; then
-        append="-e delete_db=no"
+    if [ -z "$action" ]; then
+        # No action, launch Command only.
+        docker run -td --net host --privileged \
+                -v /root/command_servers.yml:/command_servers.yml \
+                --name contrail_command_deployer \
+                $command_image
+    else
+        # With action "import" or "provision_cluster".
+        build_instances_yaml
+        if [ -n "$4" ]; then
+            append="-e delete_db=no"
+        fi
+        docker run -td --net host --privileged \
+                -e orchestrator=$orch \
+                -e action=$action \
+                $append \
+                -v /root/instances.yaml:/instances.yml \
+                -v /root/command_servers.yml:/command_servers.yml \
+                --name contrail_command_deployer \
+                $command_image
     fi
-    docker run -t --net host -d --privileged \
-            -e orchestrator=$orch \
-            -e action=$action \
-            $append \
-            -v /root/instances.yaml:/instances.yml \
-            -v /root/command_servers.yml:/command_servers.yml \
-            --name contrail_command_deployer \
-            $command_image
     check_command
     if [ "$action" == "provision_cluster" ]; then
         check_command_prov
