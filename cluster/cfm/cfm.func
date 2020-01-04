@@ -1,18 +1,20 @@
 
 cluster_br_list="br-int br-r1"
 
-server_list="contrail-1 openstack-1 csn-1 compute-1 appformix-1"
+server_list="command contrail-1 openstack-1 csn-1 compute-1
+        appformix-1 appformix-flow-1"
 
 
 launch_builder()
 {
-    local arr=(${vm_address_list[contrail-1]})
+    local arr=(${vm_address_list[command]})
     local host=${arr[0]}
 
     echo "Launch builder..."
     #copy_ssh_key $host
     #ssh $host yum install -y ansible git
-    install_openstack_deployer $host
+    #install_openstack_deployer $host
+    install_command $host
 }
 
 delete_builder()
@@ -20,22 +22,37 @@ delete_builder()
     echo "Delete builder..."
 }
 
+install_libvirt_client()
+{
+    local arr=(${vm_address_list[compute-1]})
+
+    echo "Install libvirt-client on compute..."
+    ssh ${arr[0]} "yum install -y libvirt-client"
+}
+
 pre_cluster()
 {
     echo "Pre-Deployment"
-    upgrade_kernel
+    upgrade_kernel "csn-1"
+    upgrade_kernel "compute-1"
+    install_libvirt_client
 }
 
 deploy()
 {
-    local arr=(${vm_address_list[contrail-1]})
+    local arr=(${vm_address_list[command]})
     local host=${arr[0]}
 
-    upload_instances_yaml $host
-    if [ -n "$contrail_playbook" ]; then
-        load_playbook $contrail_playbook $host
-    fi
-    run_playbook $host "deploy-openstack"
+    #upload_instances_yaml $host
+    #if [ -n "$contrail_playbook" ]; then
+    #    load_playbook $contrail_playbook $host
+    #fi
+    #run_playbook $host "deploy-openstack"
+
+    scp -r /opt/appformix-3.1.11 $host:/opt/appformix
+    scp -r /opt/appformix-flow-1.0.6 $host:/opt/appformix-flow
+    scp cluster/$poc_cluster/instances.yaml $host:./instances.yaml
+    ssh $host "./builder launch-command $host openstack provision_cluster"
 }
 
 patch_nova_compute()
@@ -112,18 +129,11 @@ launch_command()
     local host=$1
 
     echo "Launch Contrail Command..."
-    scp cluster/$poc_cluster/instances.yaml $host:./instances.yaml
-    ssh $host "./builder launch-command $host openstack import_cluster"
+    #scp cluster/$poc_cluster/instances.yaml $host:./instances.yaml
+    #ssh $host "./builder launch-command $host openstack import_cluster"
+    ssh $host "./builder launch-command $host"
 }
  
-install_libvirt_client()
-{
-    local arr=(${vm_address_list[compute-1]})
-
-    echo "Install libvirt-client on compute..."
-    ssh ${arr[0]} "yum install -y libvirt-client"
-}
-
 launch_appformix()
 {
     local arr=(${vm_address_list[appformix-1]})
@@ -158,16 +168,16 @@ post_cluster()
     local arr
 
     echo "Post-Deployment"
-    add_static_route
+    #add_static_route
     configure_haproxy
 
     arr=(${vm_address_list[openstack-1]})
     configure_openstack ${arr[0]}
     #configure_poc
 
-    arr=(${vm_address_list[contrail-1]})
-    install_command ${arr[0]}
-    launch_command ${arr[0]}
+    #arr=(${vm_address_list[contrail-1]})
+    #install_command ${arr[0]}
+    #launch_command ${arr[0]}
     #launch_appformix
 }
 

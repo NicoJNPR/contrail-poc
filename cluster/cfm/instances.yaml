@@ -1,3 +1,8 @@
+global_configuration:
+  CONTAINER_REGISTRY: __registry_url__
+  REGISTRY_PRIVATE_INSECURE: __registry_insecure__
+  CONTAINER_REGISTRY_USERNAME: __registry_username__
+  CONTAINER_REGISTRY_PASSWORD: __registry_password__
 provider_config:
   bms:
     ssh_pwd: c0ntrail123
@@ -9,8 +14,8 @@ instances:
     provider: bms
     ip: 10.6.8.1
     roles:
-      config_database:
       config:
+      config_database:
       control:
       analytics:
       analytics_alarm:
@@ -18,6 +23,7 @@ instances:
       analytics_database:
       webui:
       dhcp:
+      appformix_bare_host:
   openstack-1:
     provider: bms
     ip: 10.6.8.2
@@ -26,32 +32,44 @@ instances:
       openstack_network:
       openstack_storage:
       openstack_monitoring:
+      appformix_openstack_controller:
   csn-1:
     provider: bms
     ip: 10.6.8.3
     roles:
       vrouter:
         VROUTER_HOSTNAME: csn-1
+        VROUTER_GATEWAY: 10.6.11.254
         TSN_EVPN_MODE: True
         TSN_NODES: 10.6.11.3
+      appformix_bare_host:
   compute-1:
     provider: bms
     ip: 10.6.8.7
     roles:
       vrouter:
         VROUTER_HOSTNAME: compute-1
+        VROUTER_HOSTNAME: csn-1
       openstack_compute:
-global_configuration:
-  CONTAINER_REGISTRY: __registry_url__
-  REGISTRY_PRIVATE_INSECURE: __registry_insecure__
-  CONTAINER_REGISTRY_USERNAME: __registry_username__
-  CONTAINER_REGISTRY_PASSWORD: __registry_password__
+      appformix_compute:
+      appformix_bare_host:
+  appformix-1:
+    provider: bms
+    ip: 10.6.8.71
+    roles:
+      appformix_controller:
+  appformix-flow-1:
+    provider: bms
+    ip: 10.6.8.74
+    roles:
+      appformix_flows:
+      appformix_bare_host:
 contrail_configuration:
   CONTRAIL_VERSION: __contrail_version__
   CONTRAIL_CONTAINER_TAG: __contrail_tag__
   CLOUD_ORCHESTRATOR: openstack
   OPENSTACK_VERSION: __openstack_version__
-  CONTROLLER_NODES: 10.6.11.1
+  CONTROLLER_NODES: 10.6.8.1
   CONTROL_NODES: 10.6.11.1
   WEBUI_NODES: 10.6.8.1
   VROUTER_GATEWAY: 10.6.11.254
@@ -66,4 +84,8 @@ kolla_config:
     enable_swift: "no"
   kolla_passwords:
     keystone_admin_password: contrail123
+appformix_configuration:
+  appformix_license:  /opt/software/appformix/appformix-license-openstack.v3.sig
+xflow_configuration:
+  loadbalancer_collector_vip: 10.6.8.79
 
