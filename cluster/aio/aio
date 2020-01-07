@@ -1,7 +1,5 @@
 #!/bin/bash
 
-# Configuration
-
 aio_username=root
 aio_password=c0ntrail123
 ntp_server=10.6.8.254
@@ -74,7 +72,7 @@ provider_config:
     ssh_user: $aio_username
     ssh_pwd: $aio_password
     ntpserver: $ntp_server
-    domainsuffix: aio
+    domainsuffix: poc
 instances:
   aio:
     provider: bms
@@ -125,13 +123,6 @@ check_playbook_result()
     for rc in $rc_list; do
         if [ "$rc" != "failed=0" ]; then return 1; fi
     done
-}
-
-patch_playbook()
-{
-    # This is for 1912.32.
-    dst=/root/contrail-kolla-ansible/ansible/deregister_compute.yml
-    docker cp deregister_compute.yml contrail_kolla_ansible_deployer:$dst
 }
 
 run_playbook()
@@ -201,7 +192,6 @@ command_servers:
                           name: admin
                           domain: *default
                           password: contrail123
-                          email: admin@juniper.nets
                           roles:
                           - id: admin
                             name: admin
@@ -243,19 +233,55 @@ check_command()
             grep -A 10 "PLAY RECAP" | awk "/failed/"'{print}'
 }
 
+check_command_prov()
+{
+    local rc_list
+    local rc
+
+    let "count = 2"
+    while (( "$count" > "0"  )); do
+        sleep 10
+        echo "Check Contrail Command provisioning..."
+        tail -n 10 /var/log/contrail/deploy.log | grep "stop handling"
+        if (( "$?" == "0" )); then
+            let "count -= 1"
+        else
+            let "count = 2"
+        fi
+    done
+
+    tail -n 10 /var/log/contrail/deploy.log | \
+            grep "up-to-date" > /dev/null 2>&1
+}
+
 launch_command()
 {
+    local action=$1
+
     build_command_conf
-    docker run -t --net host -d --privileged \
-            -e orchestrator=openstack \
-            -e action=import_cluster \
-            -v /root/instances.yaml:/instances.yml \
-            -v /root/command_servers.yml:/command_servers.yml \
-            --name contrail_command_deployer \
-            $command_deployer_image
+    if [ -z "$action" ]; then
+        # No action, launch Command only.
+        docker run -td --net host --privileged \
+                -v /root/command_servers.yml:/command_servers.yml \
+                --name contrail_command_deployer \
+                $command_deployer_image
+    else
+        # With action "import" or "provision_cluster".
+        build_instances_yaml
+        docker run -td --net host --privileged \
+                -e orchestrator=openstack \
+                -e action=$action \
+                -v /root/instances.yaml:/instances.yml \
+                -v /root/command_servers.yml:/command_servers.yml \
+                --name contrail_command_deployer \
+                $command_deployer_image
+    fi
     check_command
+    if [ "$action" == "provision_cluster" ]; then
+        check_command_prov
+    fi
     systemctl status iptables > /dev/null 2>&1
-    if (( $? == 0 )); then
+    if (( "$?" == "0" )); then
         systemctl stop iptables
         systemctl disable iptables
     fi
@@ -273,7 +299,7 @@ delete_command()
     docker volume rm $vol
 }
 
-build()
+build_import()
 {
     echo "Build AIO..."
     install_docker
@@ -284,7 +310,15 @@ build()
             install_contrail.yml"
 
     pull_image "$command_deployer_image"
-    #launch_command
+    launch_command "import"
+}
+
+build_provision()
+{
+    echo "Build AIO..."
+    install_docker
+    pull_image "$command_deployer_image"
+    launch_command "provision_cluster"
 }
 
 main()
@@ -292,9 +326,6 @@ main()
     get_aio_address
 
     case "$1" in
-        build)
-            build
-            ;;
         launch-command)
             launch_command
             ;;
@@ -302,7 +333,7 @@ main()
             delete_command
             ;;
         *)
-            help
+            build_provision
             ;;
     esac
 }
