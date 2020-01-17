@@ -85,7 +85,7 @@ kolla_config:
   kolla_passwords:
     keystone_admin_password: contrail123
 appformix_configuration:
-  appformix_license:  /opt/software/appformix/appformix-license-openstack.v3.sig
+  appformix_license:  /opt/software/appformix/__appformix_license__
 xflow_configuration:
   loadbalancer_collector_vip: 10.6.8.79
 
