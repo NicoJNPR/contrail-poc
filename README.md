@@ -118,16 +118,21 @@ CentOS-7-x86_64-GenericCloud-1907.qcow2
 
 ## 3.3 AppFormix
 
-AppFormix is integrated with cluster `cfm`.
+AppFormix and AppFormix-Flow is integrated with cluster `cfm`.
 
-* Download the following packages from Juniper and upload them to `/opt/appformix` directory on the hypervisor host.
+* With Contrail 1912.32, AppFormix 3.1.11 and AppFormix-Flow 1.0.6 will be deployed. Download the following packages from Juniper and upload them to `/opt/appformix` and `/opt/appformix-flow` directories on the hypervisor host.
 ```
-appformix-3.1.2.tar.gz
-appformix-dependencies-images-3.1.2.tar.gz
-appformix-kubernetes-images-3.1.2.tar.gz
-appformix-network_device-images-3.1.2.tar.gz
-appformix-openstack-images-3.1.2.tar.gz
-appformix-platform-images-3.1.2.tar.gz
+# ls /opt/appformix/
+appformix-3.1.11.tar.gz
+appformix-dependencies-images-3.1.11.tar.gz
+appformix-internal-openstack-3.1.sig
+appformix-network_device-images-3.1.11.tar.gz
+appformix-openstack-images-3.1.11.tar.gz
+appformix-platform-images-3.1.11.tar.gz
+
+# ls /opt/appformix-flow/
+appformix-flows-1.0.6.tar.gz
+appformix-flows-ansible-1.0.6.tar.gz
 ```
 
 * Send request to `AppFormix-Key-Request.juniper.net` for AppFormix license.
@@ -136,10 +141,7 @@ appformix-platform-images-3.1.2.tar.gz
 
 * Update `appformix_license` in `poc.conf`.
 
-* Run `poc launch-appformix` after building cluster `cfm`.
-
-#### Note
-For the first time to open AppFormix UI, select `skip license upload` and `skip the installation`.
+* AppFormix and AppFormix-Flow will be deployed when build `cfm` cluster.
 
 
 # 4 Deploy
@@ -292,14 +294,17 @@ This is Contrail Fabric Management with Openstack non-HA cluster.
 * LCM BMS and non-LCM BMS
 
 ```
-host          management   data       vCPU  memory   disk  OS
+host              management  data        vCPU  memory   disk  OS
 ---------------------------------------------------------------------------
-contrail-1    10.6.8.1     10.6.11.1     5      64     80  CentOS 7.5-1805
-openstack-1   10.6.8.2     10.6.11.2     5      48     80  CentOS 7.5-1805
-csn-1         10.6.8.3     10.6.11.3     1       8     30  CentOS 7.5-1805
-compute-1     10.6.8.7     10.6.11.7     4      16     40  CentOS 7.5-1805
+command           10.6.8.91   10.6.11.91    4      16     40  CentOS 7.5-1805
+contrail-1        10.6.8.1    10.6.11.1     5      64     80  CentOS 7.5-1805
+openstack-1       10.6.8.2    10.6.11.2     5      48     80  CentOS 7.5-1805
+csn-1             10.6.8.3    10.6.11.3     1       8     30  CentOS 7.5-1805
+compute-1         10.6.8.7    10.6.11.7     4      16     40  CentOS 7.5-1805
+appformix-1       10.6.8.71   10.6.11.71    4      16     60  CentOS 7.5-1805
+appformix-flow-1  10.6.8.74   10.6.11.74    4      16     60  CentOS 7.5-1805
 ---------------------------------------------------------------------------
-Total                                   15     136    250
+Total                                      27     172    390
 ```
 
 
