@@ -120,6 +120,7 @@ build_instances_yaml()
             -e "s|__contrail_version__|$contrail_version|" \
             -e "s|__openstack_version__|$openstack_version|" \
             -e "s|__contrail_tag__|$tag|" \
+            -e "s|__appformix_license__|$appformix_license|" \
             instances.yaml
     else
         sed -i \
@@ -208,19 +209,19 @@ check_command()
     local rc_list
     local rc
 
+    echo "Check Contrail Command Deployer..."
     let "count = 2"
-    while (( "$count" > "0"  )); do
+    while (( $count > 0  )); do
         sleep 10
-        echo "Check Contrail Command Deployer..."
-        docker logs --tail 10 contrail_command_deployer | \
-                grep "PLAY RECAP" > /dev/null 2>&1
+        docker logs --tail 10 contrail_command_deployer | tee /tmp/log
+        cat /tmp/log | grep "PLAY RECAP" > /dev/null 2>&1
         if (( "$?" == "0" )); then
             let "count -= 1"
+        else
+            let "count = 2"
         fi
+        echo "================"
     done
-
-    docker logs --tail 10 contrail_command_deployer | \
-            grep -A 10 "PLAY RECAP" | awk "/failed/"'{print}'
 }
 
 check_command_prov()
@@ -228,19 +229,21 @@ check_command_prov()
     local rc_list
     local rc
 
+    echo "Check Contrail Command provisioning..."
     let "count = 2"
     while (( "$count" > "0"  )); do
         sleep 10
-        echo "Check Contrail Command provisioning..."
-        tail -n 10 /var/log/ansible.log | grep "stop handling"
+        tail -n 10 /var/log/contrail/deploy.log | tee /tmp/log
+        cat /tmp/log | grep "stop handling"
         if (( "$?" == "0" )); then
             let "count -= 1"
         else
             let "count = 2"
         fi
+        echo "================"
     done
 
-    tail -n 10 /var/log/ansible.log | grep "up-to-date" > /dev/null 2>&1
+    cat /tmp/log | grep "up-to-date" > /dev/null 2>&1
 }
 
 launch_command()
