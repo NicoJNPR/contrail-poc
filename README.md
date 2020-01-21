@@ -99,8 +99,8 @@ vmx-re.qcow2
 vmx-re-hdd.qcow2
 metadata-usb-re.img
 vFPC-20180829.img
-vqfx-pfe.qcow2
-vqfx-re.qcow2
+vqfx-19.4R1-2019010209-pfe-qemu.qcow
+jinstall-vqfx-10-f-19.4R1.10-poc.qcow2
 ```
 
 ```
@@ -214,9 +214,14 @@ Default username and password for vQFX and vMX is `root` / `Juniper`.
 
 This POC is using these vQFX RE and PFE image.
 ```
-jinstall-vqfx-10-f-18.1R1.9.img
-cosim_20180212.qcow2
+jinstall-vqfx-10-f-19.4R1.10-poc.qcow2
+vqfx-19.4R1-2019010209-pfe-qemu.qcow
 ```
+The PFE image is untouched. The RE image is customized with the followings.
+* Root user with password `Juniper`
+* SSH access
+* SSH key
+* DHCP on interface `em0`
 
 With `jinstall-vqfx-10-f-18.4R1.8.qcow2`, EVPN type-2 MAC/IP route with IP shows up in `default-switch.evpn.0`. ARP request from BMS is resolved by vQFX, not being multicasted anymore. When VM sends out ARP request for BMS, vrouter doesn't resolve it, but multicasts ARP request. When vQFX resolves request and sends reply back to vrouter, it sets VNI to 0. This is invalid VNI for vrouter. So the reply is dropped by vrouter.
 
