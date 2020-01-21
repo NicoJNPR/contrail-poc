@@ -17,7 +17,7 @@ delete_builder()
 pre_cluster()
 {
     echo "Pre-Deployment"
-    upgrade_kernel
+    upgrade_kernel aio wait
 }
 
 build_aio_script()
@@ -38,7 +38,7 @@ deploy()
     #copy_ssh_key $host
     build_aio_script
     scp /tmp/aio $host:.
-    #ssh $host "./aio"
+    ssh $host "./aio"
 }
 
 post_cluster()
