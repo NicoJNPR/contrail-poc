@@ -1,5 +1,5 @@
 
-cluster_br_list="br-int"
+cluster_br_list="br-int br-r1"
 
 server_list="aio"
 
