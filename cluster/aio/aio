@@ -8,10 +8,15 @@ contrail_version=__contrail_version__
 registry_url=hub.juniper.net/contrail
 registry_username=__registry_username__
 registry_password=__registry_password__
+
+# For multi-interface AIO.
+vrouter_gateway=10.6.11.254
+
 contrail_deployer=contrail-kolla-ansible-deployer
 contrail_deployer_image=$registry_url/$contrail_deployer:$contrail_version
 command_deployer=contrail-command-deployer
 command_deployer_image=$registry_url/$command_deployer:$contrail_version
+
 
 get_aio_address()
 {
@@ -22,6 +27,14 @@ get_aio_address()
     a_p=$(ip -f inet -br addr show dev $aio_interface | awk '{ print $3 }')
     IFS='/'; a=(${a_p}); unset IFS
     aio_address=${a[0]}
+}
+
+get_vrouter_address()
+{
+    if [ -n "$vrouter_gateway" ]; then
+        vrouter_address=$(ip route get $vrouter_gateway | \
+                awk "/$vrouter_gateway/"'{print $5}')
+    fi
 }
 
 install_docker()
@@ -101,8 +114,21 @@ contrail_configuration:
   CLOUD_ORCHESTRATOR: openstack
   OPENSTACK_VERSION: queens
   CONTROLLER_NODES: $aio_address
-  CONTROL_NODES: $aio_address
   WEBUI_NODES: $aio_address
+__EOF__
+
+    if [ -n "$vrouter_address" ]; then
+    cat << __EOF__ >> instances.yaml
+  CONTROL_NODES: $vrouter_address
+  VROUTER_GATEWAY: $vrouter_gateway
+__EOF__
+    else
+    cat << __EOF__ >> instances.yaml
+  CONTROL_NODES: $aio_address
+__EOF__
+    fi
+
+    cat << __EOF__ >> instances.yaml
   ENCAP_PRIORITY: VXLAN,MPLSoUDP,MPLSoGRE
   CONFIG_DATABASE_NODEMGR__DEFAULTS__minimum_diskGB: 20
   DATABASE_NODEMGR__DEFAULTS__minimum_diskGB: 20
@@ -329,8 +355,15 @@ build_provision()
 main()
 {
     get_aio_address
+    get_vrouter_address
 
     case "$1" in
+        build-command-conf)
+            build_command_conf
+            ;;
+        build-instances-yaml)
+            build_instances_yaml
+            ;;
         launch-command)
             launch_command
             ;;
