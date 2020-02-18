@@ -28,10 +28,10 @@ vm_nic_list[$name]="br=br-int"
 name=aio
 vm_role[$name]=aio
 vm_os[$name]=centos
-vm_address_list[$name]="10.6.8.96"
-vm_netmask_list[$name]="255.255.255.0"
-vm_gateway_list[$name]="10.6.8.254"
-vm_nic_list[$name]="br=br-int"
+vm_address_list[$name]="10.6.8.96        10.6.11.96"
+vm_netmask_list[$name]="255.255.255.0   255.255.255.0"
+vm_gateway_list[$name]="10.6.8.254      null"
+vm_nic_list[$name]="br=br-int br=br-r1"
 
 name=contrail-1
 vm_role[$name]=contrail
