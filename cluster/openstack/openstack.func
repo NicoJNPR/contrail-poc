@@ -1,7 +1,7 @@
 
 cluster_br_list="br-int br-r1"
 
-server_list="contrail-1 openstack-1 compute-1 compute-2"
+server_list="contrail-1 openstack-1 compute-1 compute-2 command"
 
 
 launch_builder()
@@ -10,8 +10,9 @@ launch_builder()
     local host=${arr[0]}
 
     echo "Launch builder..."
-    copy_ssh_key $host
-    ssh $host yum install -y ansible git
+    #copy_ssh_key $host
+    #ssh $host yum install -y ansible git
+    install_openstack_deployer $host
 }
 
 delete_builder()
@@ -22,6 +23,8 @@ delete_builder()
 pre_cluster()
 {
     echo "Pre-Deployment"
+    upgrade_kernel "compute-1" "wait"
+    upgrade_kernel "compute-2" "wait"
 }
 
 deploy()
@@ -29,8 +32,10 @@ deploy()
     local arr=(${vm_address_list[contrail-1]})
     local host=${arr[0]}
 
-    load_playbook $contrail_playbook $host
-    run_playbook $host "deploy-openstack"
+    #load_playbook $contrail_playbook $host
+    #run_playbook $host "deploy-openstack"
+    scp cluster/$poc_cluster/instances.yaml $host:./instances.yaml
+    ssh $host "./builder deploy-openstack"
 }
 
 post_cluster()
@@ -39,5 +44,13 @@ post_cluster()
     configure_haproxy
     arr=(${vm_address_list[openstack-1]})
     configure_openstack ${arr[0]}
+
+    arr=(${vm_address_list[command]})
+    host=${arr[0]}
+    install_command $host
+
+    echo "Launch Contrail Command..."
+    scp cluster/$poc_cluster/instances.yaml $host:./instances.yaml
+    ssh $host "./builder launch-command $host openstack import_cluster"
 }
 
