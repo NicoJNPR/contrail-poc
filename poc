@@ -970,21 +970,22 @@ delete_cluster_host()
 build_cluster()
 {
     local name
+    local rc
 
     create_cluster_link
     enable_snat
     for name in $server_list; do
         launch_vm $name
-        check_vm $name
-        if (( $? )); then return 1; fi
+        check_vm $name; rc=$?
+        if (( $rc )); then return $rc; fi
     done
     for name in $server_list; do
         wait_for_host $name
     done
     pre_cluster
     launch_builder
-    deploy
-    if (( $? )); then return 1; fi
+    deploy; rc=$?
+    if (( $rc )); then return $rc; fi
     post_cluster
     add_cluster_host
 }
