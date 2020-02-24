@@ -141,8 +141,6 @@ run_playbook()
     local dst
     local rc
 
-    exec > >(tee builder.log)
-    exec 2>&1
     echo "Deploy..."
 
     build_instances_yaml
@@ -269,7 +267,7 @@ launch_command()
                 --name contrail_command_deployer \
                 $command_image
     else
-        # With action "import" or "provision_cluster".
+        # With action "import_cluster" or "provision_cluster".
         build_instances_yaml
         if [ -n "$4" ]; then
             append="-e delete_db=no"
@@ -348,6 +346,9 @@ launch_appformix()
 
 main()
 {
+    exec > >(tee builder.log)
+    exec 2>&1
+
     case "$1" in
         install-deployer)
             install_deployer
