@@ -49,7 +49,6 @@ instances:
     roles:
       vrouter:
         VROUTER_HOSTNAME: compute-1
-        VROUTER_HOSTNAME: csn-1
       openstack_compute:
       appformix_compute:
       appformix_bare_host:
