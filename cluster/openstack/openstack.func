@@ -32,25 +32,33 @@ deploy()
     local arr=(${vm_address_list[contrail-1]})
     local host=${arr[0]}
 
+    upload_instances_yaml $host
     #load_playbook $contrail_playbook $host
     #run_playbook $host "deploy-openstack"
     scp cluster/$poc_cluster/instances.yaml $host:./instances.yaml
     ssh $host "./builder deploy-openstack"
 }
 
-post_cluster()
+launch_command()
 {
-    echo "Post-Deployment"
-    configure_haproxy
-    arr=(${vm_address_list[openstack-1]})
-    configure_openstack ${arr[0]}
+    local arr=(${vm_address_list[command]})
+    local host=${arr[0]}
 
-    arr=(${vm_address_list[command]})
-    host=${arr[0]}
+    echo "Install Contrail Command..."
     install_command $host
 
     echo "Launch Contrail Command..."
     scp cluster/$poc_cluster/instances.yaml $host:./instances.yaml
-    ssh $host "./builder launch-command $host openstack import_cluster"
+    ssh $host "./builder launch-command $host kubernetes import_cluster"
+}
+ 
+post_cluster()
+{
+    echo "Post-Deployment"
+    launch_command
+
+    configure_haproxy
+    arr=(${vm_address_list[openstack-1]})
+    configure_openstack ${arr[0]}
 }
 
