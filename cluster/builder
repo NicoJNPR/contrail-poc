@@ -87,7 +87,6 @@ check_playbook_result()
     local rc
 
     echo "Check playbook result..."
-    tail -n 80 builder.log
     rc_list=$(tail -n 80 builder.log | grep -A 30 "PLAY RECAP" | \
             awk "/failed/"'{print $6}')
     for rc in $rc_list; do
@@ -150,7 +149,8 @@ run_playbook()
         echo "Run playbook $pb..."
         docker exec contrail_kolla_ansible_deployer bash -c \
                 "cd /root/contrail-ansible-deployer;
-                 ansible-playbook -i inventory playbooks/$pb"
+                 ansible-playbook -i inventory playbooks/$pb" \
+                > >(tee -a builder.log)
         check_playbook_result; rc=$?
         if (( $rc )); then return $rc; fi
     done
@@ -346,8 +346,7 @@ launch_appformix()
 
 main()
 {
-    exec > >(tee builder.log)
-    exec 2>&1
+    rm -f builder.log
 
     case "$1" in
         install-deployer)
