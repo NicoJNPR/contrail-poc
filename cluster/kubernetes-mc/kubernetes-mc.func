@@ -28,6 +28,7 @@ pre_cluster()
     echo "Pre-Deployment"
     upgrade_kernel "node-1" "wait"
     upgrade_kernel "node-2" "wait"
+    upgrade_kernel "mc-gw" "wait"
 
     arr=(${vm_address_list[cmaster-1]})
     host=${arr[0]}
