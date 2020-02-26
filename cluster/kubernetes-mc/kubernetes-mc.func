@@ -1,7 +1,7 @@
 
 cluster_br_list="br-int br-r1 br-r2"
 
-server_list="cmaster-1 csn-1 node-1 node-2 command mc-gw"
+server_list="cmaster-1 node-1 node-2 command mc-gw"
 
 
 launch_builder()
@@ -10,8 +10,8 @@ launch_builder()
     local host=${arr[0]}
 
     echo "Launch builder..."
-    copy_ssh_key $host
-    ssh $host yum install -y ansible git
+    #copy_ssh_key $host
+    #ssh $host yum install -y ansible git
     install_kubernetes_deployer $host
 }
 
@@ -26,6 +26,9 @@ pre_cluster()
     local host
 
     echo "Pre-Deployment"
+    upgrade_kernel "node-1" "wait"
+    upgrade_kernel "node-2" "wait"
+
     arr=(${vm_address_list[cmaster-1]})
     host=${arr[0]}
     ssh $host "echo \"net.ipv4.ip_forward = 1\" >> /etc/sysctl.conf"
@@ -38,10 +41,11 @@ deploy()
     local host=${arr[0]}
 
     upload_instances_yaml $host
-    if [ -n "$contrail_playbook" ]; then
-        load_playbook $contrail_playbook $host
-    fi
-    run_playbook $host "deploy-kubernetes"
+    #if [ -n "$contrail_playbook" ]; then
+    #    load_playbook $contrail_playbook $host
+    #fi
+    #run_playbook $host "deploy-kubernetes"
+    ssh $host "./builder deploy-kubernetes"
 }
 
 add_static_route()
@@ -73,11 +77,14 @@ update_mc_gw()
 
 launch_command()
 {
-    local host=$1
+    local arr=(${vm_address_list[command]})
+    local host=${arr[0]}
+
+    echo "Install Contrail Command..."
+    install_command $host
 
     echo "Launch Contrail Command..."
     scp cluster/$poc_cluster/instances.yaml $host:./instances.yaml
-    #ssh $host "./builder launch-command $host kubernetes provision_cluster"
     ssh $host "./builder launch-command $host kubernetes import_cluster"
 }
  
@@ -93,16 +100,12 @@ patch_cluster()
 
 post_cluster()
 {
-    local arr=(${vm_address_list[command]})
-    local host=${arr[0]}
-
     echo "Post-Deployment"
-    install_command $host
-    launch_command $host
+    launch_command
 
     update_mc_gw
     add_static_route
     configure_haproxy
-    patch_cluster
+    #patch_cluster
 }
 

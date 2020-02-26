@@ -17,13 +17,6 @@ instances:
       webui:
       kubemanager:
       k8s_master:
-  csn-1:
-    provider: bms
-    ip: 10.6.8.3
-    roles:
-      vrouter:
-        TSN_EVPN_MODE: True
-        TSN_NODES: 10.6.11.3
   node-1:
     provider: bms
     ip: 10.6.8.67
