@@ -1,0 +1,407 @@
+
+underlay_br_list="br-int br-r1 br-r2 br-dummy br-ext
+    br-s21-int br-s21-xe2 br-s21-xe3 br-s21-xe4 br-s21-xe5
+    br-s22-int br-s22-xe2 br-s22-xe3 br-s22-xe4 br-s22-xe5
+    br-l11-int br-l12-int br-l13-int br-l14-int
+    br-l111-int br-l112-int
+    br-rr-0 br-rr-1
+    br-gw31-int br-gw131-int
+    br-gw31-ge2 br-gw32-ge2
+    br-gw131-ge2 br-gw131-ge3 br-gw132-ge2 br-gw132-ge3"
+
+underlay_veth_list="
+    l11-xe2,c1-1 l12-xe2,c1-2
+    l13-xe2,bms1-1 l14-xe2,bms1-2
+    l111-xe2,c101-1 l112-xe2,c101-2"
+
+vqfx_list="vqfx-spine-21 vqfx-leaf-11 vqfx-leaf-12 vqfx-leaf-13 vqfx-leaf-14
+    vqfx-leaf-111 vqfx-leaf-112"
+vmx_list="vmx-31 vmx-131"
+bms_list="compute-1 bms-1 compute-101"
+
+#####################################################
+name=vqfx-spine-21-re
+vm_role[$name]=vqfx-re
+vm_address_list[$name]="10.6.8.21"
+vm_nic_list[$name]="br=br-int br=br-s21-int br=br-dummy
+    br=br-gw31-ge2 br=br-gw32-ge2
+    br=br-s21-xe2 br=br-s21-xe3 br=br-s21-xe4 br=br-s21-xe5"
+
+name=vqfx-spine-21-pfe
+vm_role[$name]=vqfx-pfe
+vm_nic_model[$name]=e1000
+vm_nic_list[$name]="br=br-int br=br-s21-int"
+
+name=vqfx-leaf-11-re
+vm_role[$name]=vqfx-re
+vm_address_list[$name]="10.6.8.11"
+vm_nic_list[$name]="br=br-int br=br-l11-int br=br-dummy
+    br=br-s21-xe2 br=br-s22-xe2 dir=l11-xe2"
+
+name=vqfx-leaf-11-pfe
+vm_role[$name]=vqfx-pfe
+vm_nic_model[$name]=e1000
+vm_nic_list[$name]="br=br-int br=br-l11-int"
+
+name=vqfx-leaf-12-re
+vm_role[$name]=vqfx-re
+vm_address_list[$name]="10.6.8.12"
+vm_nic_list[$name]="br=br-int br=br-l12-int br=br-dummy
+    br=br-s21-xe3 br=br-s22-xe3 dir=l12-xe2"
+
+name=vqfx-leaf-12-pfe
+vm_role[$name]=vqfx-pfe
+vm_nic_model[$name]=e1000
+vm_nic_list[$name]="br=br-int br=br-l12-int"
+
+name=vqfx-leaf-13-re
+vm_role[$name]=vqfx-re
+vm_address_list[$name]="10.6.8.13"
+vm_nic_list[$name]="br=br-int br=br-l13-int br=br-dummy
+    br=br-s21-xe4 br=br-s22-xe4 dir=l13-xe2"
+
+name=vqfx-leaf-13-pfe
+vm_role[$name]=vqfx-pfe
+vm_nic_model[$name]=e1000
+vm_nic_list[$name]="br=br-int br=br-l13-int"
+
+name=vqfx-leaf-14-re
+vm_role[$name]=vqfx-re
+vm_address_list[$name]="10.6.8.14"
+vm_nic_list[$name]="br=br-int br=br-l14-int br=br-dummy
+    br=br-s21-xe5 br=br-s22-xe5 dir=l14-xe2"
+
+name=vqfx-leaf-14-pfe
+vm_role[$name]=vqfx-pfe
+vm_nic_model[$name]=e1000
+vm_nic_list[$name]="br=br-int br=br-l14-int"
+
+name=vmx-31-re
+vm_role[$name]=vmx-re
+vm_address_list[$name]="10.6.8.31"
+vm_nic_list[$name]="br=br-int br=br-gw31-int"
+
+name=vmx-31-pfe
+vm_role[$name]=vmx-pfe
+vm_disk_bus[$name]=ide
+vm_nic_list[$name]="br=br-int br=br-gw31-int
+    br=br-rr-0 br=br-rr-1 br=br-gw31-ge2"
+vm_spec_arg[$name]="--memorybacking hugepages=yes
+    --numatune nodeset=0 --cpu host"
+
+name=vmx-131-re
+vm_role[$name]=vmx-re
+vm_address_list[$name]="10.6.8.131"
+vm_nic_list[$name]="br=br-int br=br-gw131-int"
+
+name=vmx-131-pfe
+vm_role[$name]=vmx-pfe
+vm_disk_bus[$name]=ide
+vm_nic_list[$name]="br=br-int br=br-gw131-int
+    br=br-rr-0 br=br-rr-1 br=br-gw131-ge2 br=br-gw131-ge3"
+vm_spec_arg[$name]="--memorybacking hugepages=yes
+    --numatune nodeset=0 --cpu host"
+
+name=vqfx-leaf-111-re
+vm_role[$name]=vqfx-re
+vm_address_list[$name]="10.6.8.111"
+vm_nic_list[$name]="br=br-int br=br-l111-int br=br-dummy
+    br=br-gw131-ge2 br=br-gw132-ge2
+    dir=l111-xe2"
+
+name=vqfx-leaf-111-pfe
+vm_role[$name]=vqfx-pfe
+vm_nic_model[$name]=e1000
+vm_nic_list[$name]="br=br-int br=br-l111-int"
+
+name=vqfx-leaf-112-re
+vm_role[$name]=vqfx-re
+vm_address_list[$name]="10.6.8.112"
+vm_nic_list[$name]="br=br-int br=br-l112-int br=br-dummy
+    br=br-gw131-ge3 br=br-gw132-ge3
+    dir=l112-xe2"
+
+name=vqfx-leaf-112-pfe
+vm_role[$name]=vqfx-pfe
+vm_nic_model[$name]=e1000
+vm_nic_list[$name]="br=br-int br=br-l112-int"
+
+
+#####################################################
+name=compute-1
+vm_role[$name]=centos
+vm_address_list[$name]="10.6.8.71"
+vm_nic_list[$name]="br=br-int dir=c1-1 dir=c1-2"
+
+name=bms-1
+vm_role[$name]=centos
+vm_address_list[$name]="10.6.8.81"
+vm_nic_list[$name]="br=br-int dir=bms1-1 dir=bms1-2"
+
+name=compute-101
+vm_role[$name]=centos
+vm_address_list[$name]="10.6.8.72"
+vm_nic_list[$name]="br=br-int dir=c101-1 dir=c101-2"
+
+
+#####################################################
+configure_vmx_31()
+{
+    local arr=(${vm_address_list[vmx-31-re]})
+    local host=${arr[0]}
+
+    p="set groups underlay"
+    cat << __EOF__ > /tmp/conf
+delete groups underlay
+$p interfaces lo0 unit 0 family inet address 10.6.0.31/32
+$p interfaces ge-0/0/2 unit 0 family inet address 10.6.30.1/31
+$p interfaces ge-0/0/0 unit 0 family inet address 172.16.0.1/24
+$p interfaces ge-0/0/0 unit 0 family mpls
+$p routing-options route-distinguisher-id 10.6.0.31
+$p protocols bgp group underlay type external
+$p protocols bgp group underlay family inet unicast
+$p protocols bgp group underlay export underlay-export
+$p protocols bgp group underlay local-as 65031
+$p protocols bgp group underlay neighbor 10.6.30.0 peer-as 65021
+$p protocols ospf area 0.0.0.0 interface lo0.0
+$p protocols ospf area 0.0.0.0 interface ge-0/0/0.0
+$p protocols ldp interface ge-0/0/0.0
+$p policy-options policy-statement underlay-export term t1 from protocol direct
+$p policy-options policy-statement underlay-export term t1 from route-filter 10.6.0.31/32 exact
+$p policy-options policy-statement underlay-export term t1 then accept
+set apply-groups underlay
+__EOF__
+
+    scp /tmp/conf $host:.
+    ssh $host "cli -c 'configure; load set conf; commit'"
+}
+
+configure_vmx_131()
+{
+    local arr=(${vm_address_list[vmx-131-re]})
+    local host=${arr[0]}
+
+    p="set groups underlay"
+    cat << __EOF__ > /tmp/conf
+delete groups underlay
+$p interfaces ge-0/0/0 unit 0 family inet address 172.16.0.3/24
+$p interfaces ge-0/0/0 unit 0 family mpls
+$p interfaces lo0 unit 0 family inet address 10.6.0.131/32
+$p interfaces ge-0/0/2 unit 0 family inet address 10.6.30.10/31
+$p interfaces ge-0/0/3 unit 0 family inet address 10.6.30.12/31
+$p routing-options route-distinguisher-id 10.6.0.131
+$p protocols bgp group underlay type external
+$p protocols bgp group underlay family inet unicast
+$p protocols bgp group underlay export underlay-export
+$p protocols bgp group underlay local-as 65131
+$p protocols bgp group underlay neighbor 10.6.30.11 peer-as 65111
+$p protocols bgp group underlay neighbor 10.6.30.13 peer-as 65112
+$p protocols ospf area 0.0.0.0 interface lo0.0
+$p protocols ospf area 0.0.0.0 interface ge-0/0/0.0
+$p protocols ldp interface ge-0/0/0.0
+$p policy-options policy-statement underlay-export term t1 from protocol direct
+$p policy-options policy-statement underlay-export term t1 from route-filter 10.6.0.131/32 exact
+$p policy-options policy-statement underlay-export term t1 then accept
+set apply-groups underlay
+__EOF__
+
+    scp /tmp/conf $host:.
+    ssh $host "cli -c 'configure; load set conf; commit'"
+}
+
+configure_vqfx_spine_21()
+{
+    local arr=(${vm_address_list[vqfx-spine-21-re]})
+    local host=${arr[0]}
+
+    p="set groups underlay"
+    cat << __EOF__ > /tmp/conf
+delete groups underlay
+$p interfaces lo0 unit 0 family inet address 10.6.0.21/32
+$p interfaces xe-0/0/0 unit 0 family inet address 10.6.30.0/31
+$p interfaces xe-0/0/2 unit 0 family inet address 10.6.20.0/31
+$p interfaces xe-0/0/3 unit 0 family inet address 10.6.20.2/31
+$p interfaces xe-0/0/4 unit 0 family inet address 10.6.20.4/31
+$p interfaces xe-0/0/5 unit 0 family inet address 10.6.20.6/31
+$p routing-options route-distinguisher-id 10.6.0.21
+$p protocols bgp group underlay type external
+$p protocols bgp group underlay family inet unicast
+$p protocols bgp group underlay export underlay-export
+$p protocols bgp group underlay local-as 65021
+$p protocols bgp group underlay cluster 10.6.0.21
+$p protocols bgp group underlay neighbor 10.6.30.1 peer-as 65031
+$p protocols bgp group underlay neighbor 10.6.20.1 peer-as 65011
+$p protocols bgp group underlay neighbor 10.6.20.3 peer-as 65012
+$p protocols bgp group underlay neighbor 10.6.20.5 peer-as 65013
+$p protocols bgp group underlay neighbor 10.6.20.7 peer-as 65014
+$p policy-options policy-statement underlay-export term t1 from protocol direct
+$p policy-options policy-statement underlay-export term t1 from route-filter 10.6.0.21/32 exact
+$p policy-options policy-statement underlay-export term t1 then accept
+set apply-groups underlay
+__EOF__
+
+    scp /tmp/conf $host:.
+    ssh $host "cli -c 'configure; load set conf; commit'"
+}
+
+configure_vqfx_leaf_11()
+{
+    local arr=(${vm_address_list[vqfx-leaf-11-re]})
+    local host=${arr[0]}
+
+    p="set groups underlay"
+    cat << __EOF__ > /tmp/conf
+delete groups underlay
+$p interfaces lo0 unit 0 family inet address 10.6.0.11/32
+$p interfaces xe-0/0/0 unit 0 family inet address 10.6.20.1/31
+$p routing-options route-distinguisher-id 10.6.0.11
+$p protocols bgp group underlay type external
+$p protocols bgp group underlay family inet unicast
+$p protocols bgp group underlay export underlay-export
+$p protocols bgp group underlay local-as 65011
+$p protocols bgp group underlay neighbor 10.6.20.0 peer-as 65021
+$p policy-options policy-statement underlay-export term t1 from protocol direct
+$p policy-options policy-statement underlay-export term t1 from route-filter 10.6.0.11/32 exact
+$p policy-options policy-statement underlay-export term t1 then accept
+set apply-groups underlay
+__EOF__
+
+    scp /tmp/conf $host:.
+    ssh $host "cli -c 'configure; load set conf; commit'"
+}
+
+configure_vqfx_leaf_12()
+{
+    local arr=(${vm_address_list[vqfx-leaf-12-re]})
+    local host=${arr[0]}
+
+    p="set groups underlay"
+    cat << __EOF__ > /tmp/conf
+delete groups underlay
+$p interfaces lo0 unit 0 family inet address 10.6.0.12/32
+$p interfaces xe-0/0/0 unit 0 family inet address 10.6.20.3/31
+$p routing-options route-distinguisher-id 10.6.0.12
+$p protocols bgp group underlay type external
+$p protocols bgp group underlay family inet unicast
+$p protocols bgp group underlay export underlay-export
+$p protocols bgp group underlay local-as 65012
+$p protocols bgp group underlay neighbor 10.6.20.2 peer-as 65021
+$p policy-options policy-statement underlay-export term t1 from protocol direct
+$p policy-options policy-statement underlay-export term t1 from route-filter 10.6.0.12/32 exact
+$p policy-options policy-statement underlay-export term t1 then accept
+set apply-groups underlay
+__EOF__
+
+    scp /tmp/conf $host:.
+    ssh $host "cli -c 'configure; load set conf; commit'"
+}
+
+configure_vqfx_leaf_13()
+{
+    local arr=(${vm_address_list[vqfx-leaf-13-re]})
+    local host=${arr[0]}
+
+    p="set groups underlay"
+    cat << __EOF__ > /tmp/conf
+delete groups underlay
+$p interfaces lo0 unit 0 family inet address 10.6.0.13/32
+$p interfaces xe-0/0/0 unit 0 family inet address 10.6.20.5/31
+$p routing-options route-distinguisher-id 10.6.0.13
+$p protocols bgp group underlay type external
+$p protocols bgp group underlay family inet unicast
+$p protocols bgp group underlay export underlay-export
+$p protocols bgp group underlay local-as 65013
+$p protocols bgp group underlay neighbor 10.6.20.4 peer-as 65021
+$p policy-options policy-statement underlay-export term t1 from protocol direct
+$p policy-options policy-statement underlay-export term t1 from route-filter 10.6.0.13/32 exact
+$p policy-options policy-statement underlay-export term t1 then accept
+set apply-groups underlay
+__EOF__
+
+    scp /tmp/conf $host:.
+    ssh $host "cli -c 'configure; load set conf; commit'"
+}
+
+configure_vqfx_leaf_14()
+{
+    local arr=(${vm_address_list[vqfx-leaf-14-re]})
+    local host=${arr[0]}
+
+    p="set groups underlay"
+    cat << __EOF__ > /tmp/conf
+delete groups underlay
+$p interfaces lo0 unit 0 family inet address 10.6.0.14/32
+$p interfaces xe-0/0/0 unit 0 family inet address 10.6.20.7/31
+$p routing-options route-distinguisher-id 10.6.0.14
+$p protocols bgp group underlay type external
+$p protocols bgp group underlay family inet unicast
+$p protocols bgp group underlay export underlay-export
+$p protocols bgp group underlay local-as 65014
+$p protocols bgp group underlay neighbor 10.6.20.6 peer-as 65021
+$p policy-options policy-statement underlay-export term t1 from protocol direct
+$p policy-options policy-statement underlay-export term t1 from route-filter 10.6.0.14/32 exact
+$p policy-options policy-statement underlay-export term t1 then accept
+set apply-groups underlay
+__EOF__
+
+    scp /tmp/conf $host:.
+    ssh $host "cli -c 'configure; load set conf; commit'"
+}
+
+configure_vqfx_leaf_111()
+{
+    local arr=(${vm_address_list[vqfx-leaf-111-re]})
+    local host=${arr[0]}
+
+    p="set groups underlay"
+    cat << __EOF__ > /tmp/conf
+delete groups underlay
+$p interfaces lo0 unit 0 family inet address 10.6.0.111/32
+$p interfaces xe-0/0/0 unit 0 family inet address 10.6.30.11/31
+$p routing-options route-distinguisher-id 10.6.0.111
+$p protocols bgp group underlay type external
+$p protocols bgp group underlay family inet unicast
+$p protocols bgp group underlay export underlay-export
+$p protocols bgp group underlay local-as 65111
+$p protocols bgp group underlay neighbor 10.6.30.10 peer-as 65131
+$p policy-options policy-statement underlay-export term t1 from protocol direct
+$p policy-options policy-statement underlay-export term t1 from route-filter 10.6.0.111/32 exact
+$p policy-options policy-statement underlay-export term t1 then accept
+set apply-groups underlay
+__EOF__
+
+    scp /tmp/conf $host:.
+    ssh $host "cli -c 'configure; load set conf; commit'"
+}
+
+configure_vqfx_leaf_112()
+{
+    local arr=(${vm_address_list[vqfx-leaf-112-re]})
+    local host=${arr[0]}
+
+    p="set groups underlay"
+    cat << __EOF__ > /tmp/conf
+delete groups underlay
+$p interfaces lo0 unit 0 family inet address 10.6.0.112/32
+$p interfaces xe-0/0/0 unit 0 family inet address 10.6.30.13/31
+$p routing-options route-distinguisher-id 10.6.0.112
+$p protocols bgp group underlay type external
+$p protocols bgp group underlay family inet unicast
+$p protocols bgp group underlay export underlay-export
+$p protocols bgp group underlay local-as 65112
+$p protocols bgp group underlay neighbor 10.6.30.12 peer-as 65131
+$p policy-options policy-statement underlay-export term t1 from protocol direct
+$p policy-options policy-statement underlay-export term t1 from route-filter 10.6.0.112/32 exact
+$p policy-options policy-statement underlay-export term t1 then accept
+set apply-groups underlay
+__EOF__
+
+    scp /tmp/conf $host:.
+    ssh $host "cli -c 'configure; load set conf; commit'"
+}
+
+post_underlay()
+{
+    echo "Post underlay deployment..."
+}
+
