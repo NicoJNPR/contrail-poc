@@ -1,0 +1,66 @@
+---
+command_servers:
+    server1:
+        ip: __address__
+        connection: ssh
+        ssh_user: root
+        ssh_pass: c0ntrail123
+        sudo_pass: c0ntrail123
+        ntpserver: 10.6.8.254
+
+        container_registry: __registry_url__
+        registry_insecure: __registry_insecure__
+        container_tag: "__contrail_version__"
+        container_registry_username: __registry_username__
+        container_registry_password: __registry_password__
+        container_name: contrail-command
+
+        config_dir: /etc/contrail
+        contrail_config:
+            database:
+                type: postgres
+                dialect: postgres
+                host: localhost
+                user: root
+                password: contrail123
+            server:
+                address: ":9091"
+            keystone:
+                local: true
+                assignment:
+                    type: static
+                    data:
+                      domains:
+                        default: &default
+                          id: default
+                          name: default
+                      projects:
+                        admin: &admin
+                          id: admin
+                          name: admin
+                          domain: *default
+                      users:
+                        admin:
+                          id: admin
+                          name: admin
+                          domain: *default
+                          password: contrail123
+                          roles:
+                          - id: admin
+                            name: admin
+                            project: *admin
+                store:
+                    type: memory
+                    expire: 3600
+                insecure: true
+                authurl: https://localhost:9091/keystone/v3
+            #no_auth: true
+            insecure: true
+            client:
+              id: admin
+              password: contrail123
+              project_id: admin
+              domain_id: default
+              schema_root: /
+              endpoint: https://localhost:9091
+

@@ -1,0 +1,70 @@
+provider_config:
+  bms:
+    ssh_pwd: c0ntrail123
+    ssh_user: root
+    ntpserver: 10.6.8.254
+    domainsuffix: poc
+instances:
+  contrail-1:
+    provider: bms
+    ip: 10.6.8.1
+    roles:
+      config_database:
+      config:
+      control:
+      analytics_database:
+      analytics:
+      webui:
+  openstack-1:
+    provider: bms
+    ip: 10.6.8.2
+    roles:
+      openstack_control:
+      openstack_network:
+      openstack_storage:
+      openstack_monitoring:
+  control-r1:
+    provider: bms
+    ip: 10.6.8.6
+    roles:
+      control:
+  compute-1:
+    provider: bms
+    ip: 10.6.8.7
+    roles:
+      vrouter:
+        VROUTER_HOSTNAME: compute-1
+        VROUTER_GATEWAY: 10.6.11.254
+      openstack_compute:
+  compute-r1:
+    provider: bms
+    ip: 10.6.8.8
+    roles:
+      vrouter:
+        VROUTER_HOSTNAME: compute-r1
+        VROUTER_GATEWAY: 10.6.12.254
+      openstack_compute:
+global_configuration:
+  CONTAINER_REGISTRY: hub.juniper.net/contrail
+  CONTAINER_REGISTRY_USERNAME: __registry_username__
+  CONTAINER_REGISTRY_PASSWORD: __registry_password__
+contrail_configuration:
+  CONTRAIL_VERSION: __contrail_version__
+  CONTRAIL_CONTAINER_TAG: __contrail_tag__
+  CLOUD_ORCHESTRATOR: openstack
+  OPENSTACK_VERSION: __openstack_version__
+  CONTROLLER_NODES: 10.6.11.1
+  CONTROL_NODES: 10.6.11.1
+  WEBUI_NODES: 10.6.8.1
+  ENCAP_PRIORITY: VXLAN,MPLSoUDP,MPLSoGRE
+  CONFIG_DATABASE_NODEMGR__DEFAULTS__minimum_diskGB: 20
+  DATABASE_NODEMGR__DEFAULTS__minimum_diskGB: 20
+  AAA_MODE: no-auth
+kolla_config:
+  kolla_globals:
+    enable_haproxy: "no"
+    enable_barbican: "no"
+    enable_swift: "no"
+  kolla_passwords:
+    keystone_admin_password: contrail123
+
