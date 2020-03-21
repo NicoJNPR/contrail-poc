@@ -49,7 +49,7 @@ launch_command()
 
     echo "Launch Contrail Command..."
     scp cluster/$poc_cluster/instances.yaml $host:./instances.yaml
-    ssh $host "./builder launch-command $host kubernetes import_cluster"
+    ssh $host "./builder launch-command $host openstack import_cluster"
 }
  
 post_cluster()
