@@ -19,12 +19,12 @@ underlay_veth_list="
 #  l2-re-em1,l2-pfe-em1
 #  l2-xe2,bms22 l2-xe1,bms-dh2"
 
-vqfx_list="vqfx-leaf-1 vqfx-leaf-2 vqfx-spine-1"
-vmx_list="vmx-1"
+vqfx_list="leaf-1 leaf-2 spine-1"
+vmx_list="gw-1"
 bms_list="bms-12 bms-22 bms-dh"
 
 #####################################################
-name=vqfx-spine-1-re
+name=spine-1-re
 vm_role[$name]=vqfx-re
 vm_address_list[$name]="10.6.8.21"
 #vm_nic_list[$name]="br=br-int dir=s1-re-em1 br=br-dummy
@@ -32,13 +32,13 @@ vm_address_list[$name]="10.6.8.21"
 vm_nic_list[$name]="br=br-int br=br-s1-int br=br-dummy
     br=br-s1-xe0 br=br-s1-xe1 br=br-s1-xe2 br=br-s1-xe3"
 
-name=vqfx-spine-1-pfe
+name=spine-1-pfe
 vm_role[$name]=vqfx-pfe
 vm_nic_model[$name]=e1000
 #vm_nic_list[$name]="br=br-dummy dir=s1-pfe-em1"
 vm_nic_list[$name]="br=br-dummy br=br-s1-int"
 
-name=vqfx-leaf-1-re
+name=leaf-1-re
 vm_role[$name]=vqfx-re
 vm_address_list[$name]="10.6.8.11"
 #vm_nic_list[$name]="br=br-int dir=l1-re-em1 br=br-dummy
@@ -46,13 +46,13 @@ vm_address_list[$name]="10.6.8.11"
 vm_nic_list[$name]="br=br-int br=br-l1-int br=br-dummy
   br=br-s1-xe2 br=br-s2-xe2 br=br-l1-xe2 dir=l1-xe3 br=br-r1"
 
-name=vqfx-leaf-1-pfe
+name=leaf-1-pfe
 vm_role[$name]=vqfx-pfe
 vm_nic_model[$name]=e1000
 #vm_nic_list[$name]="br=br-dummy dir=l1-pfe-em1"
 vm_nic_list[$name]="br=br-dummy br=br-l1-int"
 
-name=vqfx-leaf-2-re
+name=leaf-2-re
 vm_role[$name]=vqfx-re
 vm_address_list[$name]="10.6.8.12"
 #vm_nic_list[$name]="br=br-int dir=l2-re-em1 br=br-dummy
@@ -60,19 +60,19 @@ vm_address_list[$name]="10.6.8.12"
 vm_nic_list[$name]="br=br-int br=br-l2-int br=br-dummy
   br=br-s1-xe3 br=br-s2-xe3 br=br-l2-xe2 dir=l2-xe3 br=br-r2"
 
-name=vqfx-leaf-2-pfe
+name=leaf-2-pfe
 vm_role[$name]=vqfx-pfe
 vm_nic_model[$name]=e1000
 #vm_nic_list[$name]="br=br-dummy dir=l2-pfe-em1"
 vm_nic_list[$name]="br=br-dummy br=br-l2-int"
 
-name=vmx-1-re
+name=gw-1-re
 vm_role[$name]=vmx-re
 vm_address_list[$name]="10.6.8.31"
 #vm_nic_list[$name]="br=br-int dir=gw1-re"
 vm_nic_list[$name]="br=br-int br=br-gw1-int"
 
-name=vmx-1-pfe
+name=gw-1-pfe
 vm_role[$name]=vmx-pfe
 vm_disk_bus[$name]=ide
 #vm_nic_list[$name]="br=br-dummy dir=gw1-pfe
@@ -98,9 +98,9 @@ vm_role[client]=cirros
 vm_nic_list[client]="br=br-ext"
 
 #####################################################
-configure_vmx_1()
+configure_gw_1()
 {
-    local arr=(${vm_address_list[vmx-1-re]})
+    local arr=(${vm_address_list[gw-1-re]})
     local host=${arr[0]}
 
     cat << __EOF__ > /tmp/conf
@@ -123,9 +123,9 @@ __EOF__
     ssh $host "cli -c 'configure; load set conf; commit'"
 }
 
-configure_vqfx_spine_1()
+configure_spine_1()
 {
-    local arr=(${vm_address_list[vqfx-spine-1-re]})
+    local arr=(${vm_address_list[spine-1-re]})
     local host=${arr[0]}
 
     cat << __EOF__ > /tmp/conf
@@ -152,9 +152,9 @@ __EOF__
     ssh $host "cli -c 'configure; load set conf; commit'"
 }
 
-configure_vqfx_leaf_1()
+configure_leaf_1()
 {
-    local arr=(${vm_address_list[vqfx-leaf-1-re]})
+    local arr=(${vm_address_list[leaf-1-re]})
     local host=${arr[0]}
 
     cat << __EOF__ > /tmp/conf
@@ -181,9 +181,9 @@ __EOF__
     ssh $host "cli -c 'configure; load set conf; commit'"
 }
 
-configure_vqfx_leaf_2()
+configure_leaf_2()
 {
-    local arr=(${vm_address_list[vqfx-leaf-2-re]})
+    local arr=(${vm_address_list[leaf-2-re]})
     local host=${arr[0]}
 
     cat << __EOF__ > /tmp/conf
