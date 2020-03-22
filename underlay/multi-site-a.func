@@ -86,8 +86,6 @@ vm_role[$name]=vmx-pfe
 vm_disk_bus[$name]=ide
 vm_nic_list[$name]="br=br-int br=br-gw31-int
     br=br-rr-0 br=br-rr-1 br=br-gw31-ge2"
-vm_spec_arg[$name]="--memorybacking hugepages=yes
-    --numatune nodeset=0 --cpu host"
 
 name=vmx-131-re
 vm_role[$name]=vmx-re
@@ -99,8 +97,6 @@ vm_role[$name]=vmx-pfe
 vm_disk_bus[$name]=ide
 vm_nic_list[$name]="br=br-int br=br-gw131-int
     br=br-rr-0 br=br-rr-1 br=br-gw131-ge2 br=br-gw131-ge3"
-vm_spec_arg[$name]="--memorybacking hugepages=yes
-    --numatune nodeset=0 --cpu host"
 
 name=vqfx-leaf-111-re
 vm_role[$name]=vqfx-re

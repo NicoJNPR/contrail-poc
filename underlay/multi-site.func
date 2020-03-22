@@ -68,8 +68,6 @@ vm_disk_bus[vmx-1-pfe]=ide
 #  br=br-ext dir=gw1-ge1"
 vm_nic_list[vmx-1-pfe]="br=br-int br=br-gw1-int
   br=br-ext br=br-s1-xe0"
-vm_spec_arg[vmx-1-pfe]="--memorybacking hugepages=yes
-  --numatune nodeset=0 --cpu host"
 
 vm_role[vmx-2-re]=vmx-re
 vm_address_list[vmx-2-re]="10.6.8.32"
@@ -82,8 +80,6 @@ vm_disk_bus[vmx-2-pfe]=ide
 #  br=br-ext dir=gw2-ge1"
 vm_nic_list[vmx-2-pfe]="br=br-int br=br-gw2-int
   br=br-ext br=br-gw2-ge1"
-vm_spec_arg[vmx-2-pfe]="--memorybacking hugepages=yes
-  --numatune nodeset=0 --cpu host"
 
 #####################################################
 vm_role[bms-11]=cirros
