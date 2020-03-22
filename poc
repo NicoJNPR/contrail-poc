@@ -15,10 +15,12 @@ image_cirros=cirros-0.4.0-x86_64-disk.img
 image_centos=CentOS-7-x86_64-GenericCloud-1805.qcow2
 image_vqfx_re=jinstall-vqfx-10-f-19.4R1.10-poc.qcow2
 image_vqfx_pfe=vqfx-19.4R1-2019010209-pfe-qemu.qcow
-image_vmx_re=vmx-re-18.3r1.9.qcow2
+#image_vmx_re=vmx-re-18.3r1.9.qcow2
+image_vmx_re=junos-vmx-x86-64-19.4R1.10.qcow2
 image_vmx_re_hdd=vmx-re-hdd.qcow2
 image_vmx_re_usb=metadata-usb-re.img
-image_vmx_pfe=vFPC-20180829.img
+#image_vmx_pfe=vFPC-20180829.img
+image_vmx_pfe=vFPC-20191114.img
 
 source poc.conf
 source role
