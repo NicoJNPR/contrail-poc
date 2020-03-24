@@ -1,213 +1,122 @@
 
 underlay_br_list="br-int br-r1 br-r2 br-dummy br-ext
-    br-s21-int br-s21-xe2 br-s21-xe3 br-s21-xe4 br-s21-xe5
-    br-s22-int br-s22-xe2 br-s22-xe3 br-s22-xe4 br-s22-xe5
-    br-l11-int br-l12-int br-l13-int br-l14-int
-    br-l111-int br-l112-int
-    br-rr-0 br-rr-1
-    br-gw31-int br-gw131-int
-    br-gw31-ge2 br-gw32-ge2
-    br-gw131-ge2 br-gw131-ge3 br-gw132-ge2 br-gw132-ge3"
+    br-s21-int
+    br-s21-xe0 br-s21-xe1 br-s21-xe2 br-s21-xe3 br-s21-xe4 br-s21-xe5
+    br-s22-xe0 br-s22-xe1 br-s22-xe2 br-s22-xe3 br-s22-xe4 br-s22-xe5
+    br-l11-int br-l13-int
+    br-gw31-int br-gw33-int
+    br-gw101-int br-gw102-int
+    br-gw101-xe0
+    br-gw102-xe0"
 
 underlay_veth_list="
-    l11-xe2,c1-1 l12-xe2,c1-2
-    l13-xe2,bms1-1 l14-xe2,bms1-2
-    l111-xe2,c101-1 l112-xe2,c101-2"
+    l13-xe2,bms1-1"
 
-vqfx_list="vqfx-spine-21 vqfx-leaf-11 vqfx-leaf-12 vqfx-leaf-13 vqfx-leaf-14
-    vqfx-leaf-111 vqfx-leaf-112"
-vmx_list="vmx-31 vmx-131"
-bms_list="compute-1 bms-1 compute-101"
+vqfx_list="spine-21 leaf-11 leaf-13 gw-101 gw-102"
+vmx_list="gw-31 gw-33"
+#bms_list="bms-1"
 
 #####################################################
-name=vqfx-spine-21-re
+name=spine-21-re
 vm_role[$name]=vqfx-re
 vm_address_list[$name]="10.6.8.21"
 vm_nic_list[$name]="br=br-int br=br-s21-int br=br-dummy
-    br=br-gw31-ge2 br=br-gw32-ge2
+    br=br-s21-xe0 br=br-s21-xe1
     br=br-s21-xe2 br=br-s21-xe3 br=br-s21-xe4 br=br-s21-xe5"
 
-name=vqfx-spine-21-pfe
+name=spine-21-pfe
 vm_role[$name]=vqfx-pfe
 vm_nic_model[$name]=e1000
 vm_nic_list[$name]="br=br-int br=br-s21-int"
 
-name=vqfx-leaf-11-re
+name=leaf-11-re
 vm_role[$name]=vqfx-re
 vm_address_list[$name]="10.6.8.11"
 vm_nic_list[$name]="br=br-int br=br-l11-int br=br-dummy
-    br=br-s21-xe2 br=br-s22-xe2 dir=l11-xe2 br=br-r1"
+    br=br-s21-xe2 br=br-s22-xe2 br=br-r1"
 
-name=vqfx-leaf-11-pfe
+name=leaf-11-pfe
 vm_role[$name]=vqfx-pfe
 vm_nic_model[$name]=e1000
 vm_nic_list[$name]="br=br-int br=br-l11-int"
 
-name=vqfx-leaf-12-re
-vm_role[$name]=vqfx-re
-vm_address_list[$name]="10.6.8.12"
-vm_nic_list[$name]="br=br-int br=br-l12-int br=br-dummy
-    br=br-s21-xe3 br=br-s22-xe3 dir=l12-xe2"
-
-name=vqfx-leaf-12-pfe
-vm_role[$name]=vqfx-pfe
-vm_nic_model[$name]=e1000
-vm_nic_list[$name]="br=br-int br=br-l12-int"
-
-name=vqfx-leaf-13-re
+name=leaf-13-re
 vm_role[$name]=vqfx-re
 vm_address_list[$name]="10.6.8.13"
 vm_nic_list[$name]="br=br-int br=br-l13-int br=br-dummy
     br=br-s21-xe4 br=br-s22-xe4 dir=l13-xe2"
 
-name=vqfx-leaf-13-pfe
+name=leaf-13-pfe
 vm_role[$name]=vqfx-pfe
 vm_nic_model[$name]=e1000
 vm_nic_list[$name]="br=br-int br=br-l13-int"
 
-name=vqfx-leaf-14-re
-vm_role[$name]=vqfx-re
-vm_address_list[$name]="10.6.8.14"
-vm_nic_list[$name]="br=br-int br=br-l14-int br=br-dummy
-    br=br-s21-xe5 br=br-s22-xe5 dir=l14-xe2"
-
-name=vqfx-leaf-14-pfe
-vm_role[$name]=vqfx-pfe
-vm_nic_model[$name]=e1000
-vm_nic_list[$name]="br=br-int br=br-l14-int"
-
-name=vmx-31-re
+name=gw-31-re
 vm_role[$name]=vmx-re
 vm_address_list[$name]="10.6.8.31"
 vm_nic_list[$name]="br=br-int br=br-gw31-int"
 
-name=vmx-31-pfe
+name=gw-31-pfe
 vm_role[$name]=vmx-pfe
 vm_disk_bus[$name]=ide
 vm_nic_list[$name]="br=br-int br=br-gw31-int
-    br=br-rr-0 br=br-rr-1 br=br-gw31-ge2"
+    br=br-ext br=br-s21-xe0"
 
-name=vmx-131-re
+name=gw-33-re
 vm_role[$name]=vmx-re
-vm_address_list[$name]="10.6.8.131"
-vm_nic_list[$name]="br=br-int br=br-gw131-int"
+vm_address_list[$name]="10.6.8.33"
+vm_nic_list[$name]="br=br-int br=br-gw33-int"
 
-name=vmx-131-pfe
+name=gw-33-pfe
 vm_role[$name]=vmx-pfe
 vm_disk_bus[$name]=ide
-vm_nic_list[$name]="br=br-int br=br-gw131-int
-    br=br-rr-0 br=br-rr-1 br=br-gw131-ge2 br=br-gw131-ge3"
+vm_nic_list[$name]="br=br-int br=br-gw33-int
+    br=br-ext br=br-gw101-xe0 br=br-gw102-xe0"
 
-name=vqfx-leaf-111-re
+name=gw-101-re
 vm_role[$name]=vqfx-re
-vm_address_list[$name]="10.6.8.111"
-vm_nic_list[$name]="br=br-int br=br-l111-int br=br-dummy
-    br=br-gw131-ge2 br=br-gw132-ge2
-    dir=l111-xe2 br=br-r2"
+vm_address_list[$name]="10.6.8.101"
+vm_nic_list[$name]="br=br-int br=br-gw101-int br=br-dummy
+    br=br-gw101-xe0 br=br-r2"
 
-name=vqfx-leaf-111-pfe
+name=gw-101-pfe
 vm_role[$name]=vqfx-pfe
 vm_nic_model[$name]=e1000
-vm_nic_list[$name]="br=br-int br=br-l111-int"
+vm_nic_list[$name]="br=br-int br=br-gw101-int"
 
-name=vqfx-leaf-112-re
+name=gw-102-re
 vm_role[$name]=vqfx-re
-vm_address_list[$name]="10.6.8.112"
-vm_nic_list[$name]="br=br-int br=br-l112-int br=br-dummy
-    br=br-gw131-ge3 br=br-gw132-ge3
-    dir=l112-xe2"
+vm_address_list[$name]="10.6.8.102"
+vm_nic_list[$name]="br=br-int br=br-gw102-int br=br-dummy
+    br=br-gw102-xe0 br=br-r2"
 
-name=vqfx-leaf-112-pfe
+name=gw-102-pfe
 vm_role[$name]=vqfx-pfe
 vm_nic_model[$name]=e1000
-vm_nic_list[$name]="br=br-int br=br-l112-int"
+vm_nic_list[$name]="br=br-int br=br-gw102-int"
 
 
 #####################################################
-name=compute-1
-vm_role[$name]=centos
-vm_address_list[$name]="10.6.8.71"
-vm_nic_list[$name]="br=br-int dir=c1-1 dir=c1-2"
+#name=compute-1
+#vm_role[$name]=centos
+#vm_address_list[$name]="10.6.8.71"
+#vm_nic_list[$name]="br=br-int dir=c1-1 dir=c1-2"
 
 name=bms-1
 vm_role[$name]=centos
 vm_address_list[$name]="10.6.8.81"
-vm_nic_list[$name]="br=br-int dir=bms1-1 dir=bms1-2"
+vm_nic_list[$name]="br=br-int dir=bms1-1"
 
-name=compute-101
-vm_role[$name]=centos
-vm_address_list[$name]="10.6.8.72"
-vm_nic_list[$name]="br=br-int dir=c101-1 dir=c101-2"
+#name=compute-101
+#vm_role[$name]=centos
+#vm_address_list[$name]="10.6.8.72"
+#vm_nic_list[$name]="br=br-int dir=c101-1 dir=c101-2"
 
 
 #####################################################
-configure_vmx_31()
+configure_spine_21()
 {
-    local arr=(${vm_address_list[vmx-31-re]})
-    local host=${arr[0]}
-
-    p="set groups underlay"
-    cat << __EOF__ > /tmp/conf
-delete groups underlay
-$p interfaces lo0 unit 0 family inet address 10.6.0.31/32
-$p interfaces ge-0/0/2 unit 0 family inet address 10.6.30.1/31
-$p interfaces ge-0/0/0 unit 0 family inet address 172.16.0.1/24
-$p interfaces ge-0/0/0 unit 0 family mpls
-$p routing-options route-distinguisher-id 10.6.0.31
-$p protocols bgp group underlay type external
-$p protocols bgp group underlay family inet unicast
-$p protocols bgp group underlay export underlay-export
-$p protocols bgp group underlay local-as 65031
-$p protocols bgp group underlay neighbor 10.6.30.0 peer-as 65021
-$p protocols ospf area 0.0.0.0 interface lo0.0
-$p protocols ospf area 0.0.0.0 interface ge-0/0/0.0
-$p protocols ldp interface ge-0/0/0.0
-$p policy-options policy-statement underlay-export term t1 from protocol direct
-$p policy-options policy-statement underlay-export term t1 from route-filter 10.6.0.31/32 exact
-$p policy-options policy-statement underlay-export term t1 then accept
-set apply-groups underlay
-__EOF__
-
-    scp /tmp/conf $host:.
-    ssh $host "cli -c 'configure; load set conf; commit'"
-}
-
-configure_vmx_131()
-{
-    local arr=(${vm_address_list[vmx-131-re]})
-    local host=${arr[0]}
-
-    p="set groups underlay"
-    cat << __EOF__ > /tmp/conf
-delete groups underlay
-$p interfaces ge-0/0/0 unit 0 family inet address 172.16.0.3/24
-$p interfaces ge-0/0/0 unit 0 family mpls
-$p interfaces lo0 unit 0 family inet address 10.6.0.131/32
-$p interfaces ge-0/0/2 unit 0 family inet address 10.6.30.10/31
-$p interfaces ge-0/0/3 unit 0 family inet address 10.6.30.12/31
-$p routing-options route-distinguisher-id 10.6.0.131
-$p protocols bgp group underlay type external
-$p protocols bgp group underlay family inet unicast
-$p protocols bgp group underlay export underlay-export
-$p protocols bgp group underlay local-as 65131
-$p protocols bgp group underlay neighbor 10.6.30.11 peer-as 65111
-$p protocols bgp group underlay neighbor 10.6.30.13 peer-as 65112
-$p protocols ospf area 0.0.0.0 interface lo0.0
-$p protocols ospf area 0.0.0.0 interface ge-0/0/0.0
-$p protocols ldp interface ge-0/0/0.0
-$p policy-options policy-statement underlay-export term t1 from protocol direct
-$p policy-options policy-statement underlay-export term t1 from route-filter 10.6.0.131/32 exact
-$p policy-options policy-statement underlay-export term t1 then accept
-set apply-groups underlay
-__EOF__
-
-    scp /tmp/conf $host:.
-    ssh $host "cli -c 'configure; load set conf; commit'"
-}
-
-configure_vqfx_spine_21()
-{
-    local arr=(${vm_address_list[vqfx-spine-21-re]})
+    local arr=(${vm_address_list[spine-21-re]})
     local host=${arr[0]}
 
     p="set groups underlay"
@@ -216,9 +125,7 @@ delete groups underlay
 $p interfaces lo0 unit 0 family inet address 10.6.0.21/32
 $p interfaces xe-0/0/0 unit 0 family inet address 10.6.30.0/31
 $p interfaces xe-0/0/2 unit 0 family inet address 10.6.20.0/31
-$p interfaces xe-0/0/3 unit 0 family inet address 10.6.20.2/31
 $p interfaces xe-0/0/4 unit 0 family inet address 10.6.20.4/31
-$p interfaces xe-0/0/5 unit 0 family inet address 10.6.20.6/31
 $p routing-options route-distinguisher-id 10.6.0.21
 $p protocols bgp group underlay type external
 $p protocols bgp group underlay family inet unicast
@@ -227,9 +134,7 @@ $p protocols bgp group underlay local-as 65021
 $p protocols bgp group underlay cluster 10.6.0.21
 $p protocols bgp group underlay neighbor 10.6.30.1 peer-as 65031
 $p protocols bgp group underlay neighbor 10.6.20.1 peer-as 65011
-$p protocols bgp group underlay neighbor 10.6.20.3 peer-as 65012
 $p protocols bgp group underlay neighbor 10.6.20.5 peer-as 65013
-$p protocols bgp group underlay neighbor 10.6.20.7 peer-as 65014
 $p policy-options policy-statement underlay-export term t1 from protocol direct
 $p policy-options policy-statement underlay-export term t1 from route-filter 10.6.0.21/32 exact
 $p policy-options policy-statement underlay-export term t1 then accept
@@ -240,9 +145,124 @@ __EOF__
     ssh $host "cli -c 'configure; load set conf; commit'"
 }
 
-configure_vqfx_leaf_11()
+configure_gw_31()
 {
-    local arr=(${vm_address_list[vqfx-leaf-11-re]})
+    local arr=(${vm_address_list[gw-31-re]})
+    local host=${arr[0]}
+
+    p="set groups underlay"
+    cat << __EOF__ > /tmp/conf
+delete groups underlay
+$p chassis fpc 0 pic 0 tunnel-services bandwidth 1g
+$p interfaces lo0 unit 0 family inet address 10.6.0.31/32
+$p interfaces ge-0/0/1 unit 0 family inet address 10.6.30.1/31
+$p policy-options policy-statement underlay-export term t1 from protocol direct
+$p policy-options policy-statement underlay-export term t1 from route-filter 10.6.0.31/32 exact
+$p policy-options policy-statement underlay-export term t1 then accept
+$p routing-options route-distinguisher-id 10.6.0.31
+$p protocols bgp group underlay type external
+$p protocols bgp group underlay family inet unicast
+$p protocols bgp group underlay export underlay-export
+$p protocols bgp group underlay local-as 65031
+$p protocols bgp group underlay neighbor 10.6.30.0 peer-as 65021
+set apply-groups underlay
+__EOF__
+
+    p="set groups core"
+    cat << __EOF__ >> /tmp/conf
+delete groups core
+$p interfaces ge-0/0/0 unit 0 family inet address 172.16.0.1/24
+$p interfaces ge-0/0/0 unit 0 family mpls
+$p policy-options policy-statement core-export term t1 then next-hop self
+$p protocols ospf area 0.0.0.0 interface lo0.0
+$p protocols ospf area 0.0.0.0 interface ge-0/0/0.0
+$p protocols bgp group core type internal
+$p protocols bgp group core local-address 10.6.0.31
+$p protocols bgp group core family inet unicast
+$p protocols bgp group core family inet-vpn unicast
+$p protocols bgp group core export core-export
+$p protocols bgp group core local-as 64500
+$p protocols bgp group core neighbor 10.6.0.33 peer-as 64500
+$p protocols ldp interface ge-0/0/0.0
+set apply-groups core
+__EOF__
+
+    scp /tmp/conf $host:.
+    ssh $host "cli -c 'configure; load set conf; commit'"
+}
+
+configure_gw_33()
+{
+    local arr=(${vm_address_list[gw-33-re]})
+    local host=${arr[0]}
+
+    p="set groups core"
+    cat << __EOF__ > /tmp/conf
+delete groups core
+$p interfaces ge-0/0/0 unit 0 family inet address 172.16.0.3/24
+$p interfaces ge-0/0/0 unit 0 family mpls
+$p interfaces lo0 unit 0 family inet address 10.6.0.33/32
+$p routing-options route-distinguisher-id 10.6.0.33
+$p protocols bgp group core type internal
+$p protocols bgp group core local-address 10.6.0.33
+$p protocols bgp group core family inet unicast
+$p protocols bgp group core family inet-vpn unicast
+$p protocols bgp group core export core-export
+$p protocols bgp group core local-as 64500
+$p protocols bgp group core neighbor 10.6.0.31 peer-as 64500
+$p protocols ospf area 0.0.0.0 interface lo0.0
+$p protocols ospf area 0.0.0.0 interface ge-0/0/0.0
+$p protocols ldp interface ge-0/0/0.0
+$p policy-options policy-statement core-export term t1 from protocol direct
+$p policy-options policy-statement core-export term t1 from route-filter 10.6.0.33/32 exact
+$p policy-options policy-statement core-export term t1 then next-hop self
+$p policy-options policy-statement core-export term t1 then accept
+set apply-groups core
+__EOF__
+
+    p="set groups customer-a"
+    cat << __EOF__ >> /tmp/conf
+delete groups customer-a
+$p interfaces ge-0/0/1 unit 0 family inet address 10.20.1.254/24
+$p interfaces lo0 unit 101 family inet address 10.20.1.10/32
+$p policy-options policy-statement vrf-a-export term t1 from protocol bgp
+$p policy-options policy-statement vrf-a-export term t1 then accept
+$p routing-instances customer-a instance-type vrf
+$p routing-instances customer-a interface lo0.101
+$p routing-instances customer-a interface ge-0/0/1.0
+$p routing-instances customer-a route-distinguisher 10.6.0.33:60101
+$p routing-instances customer-a vrf-target target:60101:100
+$p routing-instances customer-a vrf-table-label
+$p routing-instances customer-a protocols ospf export vrf-a-export
+$p routing-instances customer-a protocols ospf area 1.1.1.1 interface ge-0/0/1.0
+set apply-groups customer-a
+__EOF__
+
+    p="set groups customer-b"
+    cat << __EOF__ >> /tmp/conf
+delete groups customer-b
+$p interfaces ge-0/0/2 unit 0 family inet address 10.20.2.254/24
+$p interfaces lo0 unit 102 family inet address 10.20.2.10/32
+$p policy-options policy-statement vrf-b-export term t1 from protocol bgp
+$p policy-options policy-statement vrf-b-export term t1 then accept
+$p routing-instances customer-b instance-type vrf
+$p routing-instances customer-b interface lo0.102
+$p routing-instances customer-b interface ge-0/0/2.0
+$p routing-instances customer-b route-distinguisher 10.6.0.33:60102
+$p routing-instances customer-b vrf-target target:60102:100
+$p routing-instances customer-b vrf-table-label
+$p routing-instances customer-b protocols ospf export vrf-b-export
+$p routing-instances customer-b protocols ospf area 2.2.2.2 interface ge-0/0/2.0
+set apply-groups customer-b
+__EOF__
+
+    scp /tmp/conf $host:.
+    ssh $host "cli -c 'configure; load set conf; commit'"
+}
+
+configure_leaf_11()
+{
+    local arr=(${vm_address_list[leaf-11-re]})
     local host=${arr[0]}
 
     p="set groups underlay"
@@ -250,20 +270,20 @@ configure_vqfx_leaf_11()
 delete groups underlay
 $p interfaces lo0 unit 0 family inet address 10.6.0.11/32
 $p interfaces xe-0/0/0 unit 0 family inet address 10.6.20.1/31
-$p interfaces xe-0/0/3 unit 0 family ethernet-switching vlan members vlan-11
+$p interfaces xe-0/0/2 unit 0 family ethernet-switching vlan members vlan-11
 $p interfaces irb unit 11 family inet address 10.6.11.254/24
-$p vlans vlan-11 vlan-id 11
-$p vlans vlan-11 l3-interface irb.11
+$p policy-options policy-statement underlay-export term t1 from protocol direct
+$p policy-options policy-statement underlay-export term t1 from route-filter 10.6.0.11/32 exact
+$p policy-options policy-statement underlay-export term t1 from route-filter 10.6.11.0/24 exact
+$p policy-options policy-statement underlay-export term t1 then accept
 $p routing-options route-distinguisher-id 10.6.0.11
 $p protocols bgp group underlay type external
 $p protocols bgp group underlay family inet unicast
 $p protocols bgp group underlay export underlay-export
 $p protocols bgp group underlay local-as 65011
 $p protocols bgp group underlay neighbor 10.6.20.0 peer-as 65021
-$p policy-options policy-statement underlay-export term t1 from protocol direct
-$p policy-options policy-statement underlay-export term t1 from route-filter 10.6.0.11/32 exact
-$p policy-options policy-statement underlay-export term t1 from route-filter 10.6.11.0/24 exact
-$p policy-options policy-statement underlay-export term t1 then accept
+$p vlans vlan-11 vlan-id 11
+$p vlans vlan-11 l3-interface irb.11
 set apply-groups underlay
 __EOF__
 
@@ -271,35 +291,9 @@ __EOF__
     ssh $host "cli -c 'configure; load set conf; commit'"
 }
 
-configure_vqfx_leaf_12()
+configure_leaf_13()
 {
-    local arr=(${vm_address_list[vqfx-leaf-12-re]})
-    local host=${arr[0]}
-
-    p="set groups underlay"
-    cat << __EOF__ > /tmp/conf
-delete groups underlay
-$p interfaces lo0 unit 0 family inet address 10.6.0.12/32
-$p interfaces xe-0/0/0 unit 0 family inet address 10.6.20.3/31
-$p routing-options route-distinguisher-id 10.6.0.12
-$p protocols bgp group underlay type external
-$p protocols bgp group underlay family inet unicast
-$p protocols bgp group underlay export underlay-export
-$p protocols bgp group underlay local-as 65012
-$p protocols bgp group underlay neighbor 10.6.20.2 peer-as 65021
-$p policy-options policy-statement underlay-export term t1 from protocol direct
-$p policy-options policy-statement underlay-export term t1 from route-filter 10.6.0.12/32 exact
-$p policy-options policy-statement underlay-export term t1 then accept
-set apply-groups underlay
-__EOF__
-
-    scp /tmp/conf $host:.
-    ssh $host "cli -c 'configure; load set conf; commit'"
-}
-
-configure_vqfx_leaf_13()
-{
-    local arr=(${vm_address_list[vqfx-leaf-13-re]})
+    local arr=(${vm_address_list[leaf-13-re]})
     local host=${arr[0]}
 
     p="set groups underlay"
@@ -323,83 +317,44 @@ __EOF__
     ssh $host "cli -c 'configure; load set conf; commit'"
 }
 
-configure_vqfx_leaf_14()
+configure_gw_101()
 {
-    local arr=(${vm_address_list[vqfx-leaf-14-re]})
+    local arr=(${vm_address_list[gw-101-re]})
     local host=${arr[0]}
 
-    p="set groups underlay"
+    p="set groups site"
     cat << __EOF__ > /tmp/conf
-delete groups underlay
-$p interfaces lo0 unit 0 family inet address 10.6.0.14/32
-$p interfaces xe-0/0/0 unit 0 family inet address 10.6.20.7/31
-$p routing-options route-distinguisher-id 10.6.0.14
-$p protocols bgp group underlay type external
-$p protocols bgp group underlay family inet unicast
-$p protocols bgp group underlay export underlay-export
-$p protocols bgp group underlay local-as 65014
-$p protocols bgp group underlay neighbor 10.6.20.6 peer-as 65021
-$p policy-options policy-statement underlay-export term t1 from protocol direct
-$p policy-options policy-statement underlay-export term t1 from route-filter 10.6.0.14/32 exact
-$p policy-options policy-statement underlay-export term t1 then accept
-set apply-groups underlay
+delete groups site
+$p interfaces xe-0/0/0 unit 0 family inet address 10.20.1.253/24
+$p interfaces xe-0/0/1 unit 0 family ethernet-switching vlan members vlan-8
+$p interfaces irb unit 8 family inet address 172.16.11.254/24
+$p protocols ospf area 1.1.1.1 interface xe-0/0/0.0
+$p protocols ospf area 1.1.1.1 interface irb.8
+$p vlans vlan-8 vlan-id 8
+$p vlans vlan-8 l3-interface irb.8
+set apply-groups site
 __EOF__
 
     scp /tmp/conf $host:.
     ssh $host "cli -c 'configure; load set conf; commit'"
 }
 
-configure_vqfx_leaf_111()
+configure_gw_102()
 {
-    local arr=(${vm_address_list[vqfx-leaf-111-re]})
+    local arr=(${vm_address_list[gw-102-re]})
     local host=${arr[0]}
 
-    p="set groups underlay"
+    p="set groups site"
     cat << __EOF__ > /tmp/conf
 delete groups underlay
-$p interfaces lo0 unit 0 family inet address 10.6.0.111/32
-$p interfaces xe-0/0/0 unit 0 family inet address 10.6.30.11/31
-$p interfaces xe-0/0/3 unit 0 family ethernet-switching vlan members vlan-12
-$p interfaces irb unit 12 family inet address 10.6.12.254/24
-$p vlans vlan-12 vlan-id 12
-$p vlans vlan-12 l3-interface irb.12
-$p routing-options route-distinguisher-id 10.6.0.111
-$p protocols bgp group underlay type external
-$p protocols bgp group underlay family inet unicast
-$p protocols bgp group underlay export underlay-export
-$p protocols bgp group underlay local-as 65111
-$p protocols bgp group underlay neighbor 10.6.30.10 peer-as 65131
-$p policy-options policy-statement underlay-export term t1 from protocol direct
-$p policy-options policy-statement underlay-export term t1 from route-filter 10.6.0.111/32 exact
-$p policy-options policy-statement underlay-export term t1 from route-filter 10.6.12.0/24 exact
-$p policy-options policy-statement underlay-export term t1 then accept
-set apply-groups underlay
-__EOF__
-
-    scp /tmp/conf $host:.
-    ssh $host "cli -c 'configure; load set conf; commit'"
-}
-
-configure_vqfx_leaf_112()
-{
-    local arr=(${vm_address_list[vqfx-leaf-112-re]})
-    local host=${arr[0]}
-
-    p="set groups underlay"
-    cat << __EOF__ > /tmp/conf
-delete groups underlay
-$p interfaces lo0 unit 0 family inet address 10.6.0.112/32
-$p interfaces xe-0/0/0 unit 0 family inet address 10.6.30.13/31
-$p routing-options route-distinguisher-id 10.6.0.112
-$p protocols bgp group underlay type external
-$p protocols bgp group underlay family inet unicast
-$p protocols bgp group underlay export underlay-export
-$p protocols bgp group underlay local-as 65112
-$p protocols bgp group underlay neighbor 10.6.30.12 peer-as 65131
-$p policy-options policy-statement underlay-export term t1 from protocol direct
-$p policy-options policy-statement underlay-export term t1 from route-filter 10.6.0.112/32 exact
-$p policy-options policy-statement underlay-export term t1 then accept
-set apply-groups underlay
+$p interfaces xe-0/0/0 unit 0 family inet address 10.20.2.253/24
+$p interfaces xe-0/0/1 unit 0 family ethernet-switching vlan members vlan-8
+$p interfaces irb unit 8 family inet address 172.16.12.254/24
+$p protocols ospf area 2.2.2.2 interface xe-0/0/0.0
+$p protocols ospf area 2.2.2.2 interface irb.8
+$p vlans vlan-8 vlan-id 8
+$p vlans vlan-8 l3-interface irb.8
+set apply-groups site
 __EOF__
 
     scp /tmp/conf $host:.
