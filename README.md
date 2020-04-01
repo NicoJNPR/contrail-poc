@@ -120,24 +120,26 @@ CentOS-7-x86_64-GenericCloud-1907.qcow2
 
 AppFormix and AppFormix-Flow is integrated with cluster `cfm`.
 
-* With Contrail 1912.32, AppFormix 3.1.11 and AppFormix-Flow 1.0.6 will be deployed. Download the following packages from Juniper and upload them to `/opt/appformix` and `/opt/appformix-flow` directories on the hypervisor host.
+* Check Contrail documentation to find out which version of AppFormix and AppFormix Flow are required. Download the following packages from Juniper and upload them to `/opt/appformix` and `/opt/appformix-flow` directories on the hypervisor host.
 ```
 # ls /opt/appformix/
-appformix-3.1.11.tar.gz
-appformix-dependencies-images-3.1.11.tar.gz
-appformix-internal-openstack-3.1.sig
-appformix-network_device-images-3.1.11.tar.gz
-appformix-openstack-images-3.1.11.tar.gz
-appformix-platform-images-3.1.11.tar.gz
+appformix-<version>.tar.gz
+appformix-dependencies-images-<version>.tar.gz
+appformix-network_device-images-<version>.tar.gz
+appformix-openstack-images-<version>.tar.gz
+appformix-platform-images-<version>.tar.gz
 
 # ls /opt/appformix-flow/
-appformix-flows-1.0.6.tar.gz
-appformix-flows-ansible-1.0.6.tar.gz
+appformix-flows-<version>.tar.gz
+appformix-flows-ansible-<version>.tar.gz
 ```
 
 * Send request to `AppFormix-Key-Request.juniper.net` for AppFormix license.
 
 * Copy the license to `/opt/appformix` directory on the hypervisor host.
+```
+appformix-internal-openstack-3.1.sig
+```
 
 * Update `appformix_license` in `poc.conf`.
 
