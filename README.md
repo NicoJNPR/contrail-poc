@@ -95,12 +95,12 @@ Copy the following VM images `/opt/vm-image` directory.
 ```
 CentOS-7-x86_64-GenericCloud-1805.qcow2
 cirros-0.4.0-x86_64-disk.img
-vmx-re.qcow2
-vmx-re-hdd.qcow2
+junos-vmx-x86-64-19.4R1.10.qcow2
+vFPC-20191114.img
 metadata-usb-re.img
-vFPC-20180829.img
-vqfx-19.4R1-2019010209-pfe-qemu.qcow
+vmx-re-hdd.qcow2
 jinstall-vqfx-10-f-19.4R1.10-poc.qcow2
+vqfx-19.4R1-2019010209-pfe-qemu.qcow
 ```
 
 ```
@@ -230,7 +230,7 @@ With `jinstall-vqfx-10-f-18.4R1.8.qcow2`, EVPN type-2 MAC/IP route with IP shows
 
 ## 6.2 vMX
 
-This POC is using vMX 18.3R1.9 with [trial license](https://www.juniper.net/us/en/dm/free-vmx-trial/E421992502.txt).
+This POC is using vMX 19.4R1.10 with [trial license](https://www.juniper.net/us/en/dm/free-vmx-trial/E421992502.txt).
 
 
 # Appendix A Cluster
