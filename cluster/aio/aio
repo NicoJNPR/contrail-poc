@@ -109,8 +109,8 @@ global_configuration:
   CONTAINER_REGISTRY_USERNAME: $registry_username
   CONTAINER_REGISTRY_PASSWORD: $registry_password
 contrail_configuration:
-  CONTRAIL_VERSION: $contrail_version
-  CONTRAIL_CONTAINER_TAG: $contrail_version
+  CONTRAIL_VERSION: "$contrail_version"
+  CONTRAIL_CONTAINER_TAG: "$contrail_version"
   CLOUD_ORCHESTRATOR: openstack
   OPENSTACK_VERSION: queens
   CONTROLLER_NODES: $aio_address
