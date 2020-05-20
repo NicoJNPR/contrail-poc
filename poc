@@ -13,6 +13,7 @@ fi
 
 image_cirros=cirros-0.4.0-x86_64-disk.img
 image_centos=CentOS-7-x86_64-GenericCloud-1907.qcow2
+image_vsrx=junos-vsrx3-x86-64-20.1R1.11.qcow2
 image_vqfx_re=jinstall-vqfx-10-f-19.4R1.10-poc.qcow2
 image_vqfx_pfe=vqfx-19.4R1-2019010209-pfe-qemu.qcow
 #image_vmx_re=vmx-re-18.3r1.9.qcow2
@@ -928,6 +929,18 @@ configure_openstack()
           --container-format bare --disk-format qcow2 --public \
           --file /var/lib/kolla/config_files/$image_cirros cirros\""
     ssh $host "rm -f /etc/kolla/kolla-toolbox/$image_cirros"
+    scp $image_path/$image_vsrx $host:/etc/kolla/kolla-toolbox/
+    ssh $host "docker exec -u root kolla_toolbox \
+      bash -c \"source /var/lib/kolla/config_files/admin-openrc.sh; \
+        openstack flavor create \
+          --id 2 --disk 20 --ram 4096 --vcpus 2 --public vSRX\""
+    ssh $host "docker exec -u root kolla_toolbox \
+      bash -c \"source /var/lib/kolla/config_files/admin-openrc.sh; \
+        openstack image create \
+          --container-format bare --disk-format qcow2 --public \
+          --file /var/lib/kolla/config_files/$image_vSRX vSRX-20_1R1\""
+    ssh $host "rm -f /etc/kolla/kolla-toolbox/$image_vsrx"    
+    
 }
 
 install_command()
