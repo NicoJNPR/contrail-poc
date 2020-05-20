@@ -928,7 +928,6 @@ configure_openstack()
         openstack image create \
           --container-format bare --disk-format qcow2 --public \
           --file /var/lib/kolla/config_files/$image_cirros cirros\""
-    ssh $host "rm -f /etc/kolla/kolla-toolbox/$image_cirros"
     scp $image_path/$image_vsrx $host:/etc/kolla/kolla-toolbox/
     ssh $host "docker exec -u root kolla_toolbox \
       bash -c \"source /var/lib/kolla/config_files/admin-openrc.sh; \
@@ -939,7 +938,7 @@ configure_openstack()
         openstack image create \
           --container-format bare --disk-format qcow2 --public \
           --file /var/lib/kolla/config_files/$image_vsrx vSRX-20_1R1\""
-    ssh $host "rm -f /etc/kolla/kolla-toolbox/$image_vsrx"    
+    
     
 }
 
