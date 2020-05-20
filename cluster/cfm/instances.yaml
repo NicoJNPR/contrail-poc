@@ -52,6 +52,15 @@ instances:
       openstack_compute:
       appformix_compute:
       appformix_bare_host:
+  compute-2:
+    provider: bms
+    ip: 10.6.8.8
+    roles:
+      vrouter:
+        VROUTER_HOSTNAME: compute-2
+      openstack_compute:
+      appformix_compute:
+      appformix_bare_host:
   appformix-1:
     provider: bms
     ip: 10.6.8.71
