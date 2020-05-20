@@ -35,6 +35,7 @@ pre_cluster()
     echo "Pre-Deployment"
     upgrade_kernel "csn-1" "wait"
     upgrade_kernel "compute-1" "wait"
+    upgrade_kernel "compute-2" "wait"    
     install_libvirt_client
 }
 
