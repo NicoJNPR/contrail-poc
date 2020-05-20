@@ -1,7 +1,7 @@
 
 cluster_br_list="br-int br-r1"
 
-server_list="command contrail-1 openstack-1 csn-1 compute-1
+server_list="command contrail-1 openstack-1 csn-1 compute-1 compute-2
         appformix-1 appformix-flow-1"
 
 
