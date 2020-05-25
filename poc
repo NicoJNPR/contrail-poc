@@ -12,7 +12,7 @@ else
 fi
 
 image_cirros=cirros-0.4.0-x86_64-disk.img
-image_centos=CentOS-7-x86_64-GenericCloud-1907.qcow2
+image_centos=CentOS-7-x86_64-GenericCloud-2003.qcow2
 image_vsrx=junos-vsrx3-x86-64-20.1R1.11.qcow2
 image_vqfx_re=jinstall-vqfx-10-f-19.4R1.10-poc.qcow2
 image_vqfx_pfe=vqfx-19.4R1-2019010209-pfe-qemu.qcow
