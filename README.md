@@ -44,7 +44,7 @@ Here are prerequisites for the hypervisor.
   * At least one NIC that has public/internet access.
 
 * Host OS
-  * CentOS 7.5 and Ubuntu 16.04.3 are validated.
+  * CentOS 7.7 and Ubuntu 16.04.3 are validated.
 
 * Disk partition
   * Optionally, for better disk performance, reserve a partition (1TB) for libvirt volume.
@@ -93,7 +93,7 @@ poc setup-hypervisor
 
 Copy the following VM images `/opt/vm-image` directory.
 ```
-CentOS-7-x86_64-GenericCloud-1805.qcow2
+CentOS-7-x86_64-GenericCloud-2003.qcow2
 cirros-0.4.0-x86_64-disk.img
 junos-vmx-x86-64-19.4R1.10.qcow2
 vFPC-20191114.img
@@ -103,17 +103,6 @@ jinstall-vqfx-10-f-19.4R1.10-poc.qcow2
 vqfx-19.4R1-2019010209-pfe-qemu.qcow
 ```
 
-```
-CentOS-7-x86_64-GenericCloud-1805.qcow2
-    CentOS Linux release 7.5.1804 (Core)
-    3.10.0-862.3.2.el7.x86_64
-
-CentOS-7-x86_64-GenericCloud-1907.qcow2
-    CentOS Linux release 7.6.1810 (Core)
-    3.10.0-957.27.2.el7.x86_64
-
-    3.10.0-1062.1.2.el7.x86_64
-```
 
 
 ## 3.3 AppFormix
