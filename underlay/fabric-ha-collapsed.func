@@ -1,4 +1,3 @@
-
 #underlay_br_list="br-int br-r1 br-dummy br-ext"
 underlay_br_list="br-int br-r1 br-dummy br-ext
     br-l1-int br-l2-int br-s1-int br-s2-int br-gw1-int br-gw2-int
@@ -22,12 +21,13 @@ underlay_veth_list="
 #  l2-re-em1,l2-pfe-em1
 #  l2-xe2,bms22 l2-xe3,bms-dh-2"
 
-vqfx_list="vqfx-spine-1 vqfx-spine-2 vqfx-leaf-1 vqfx-leaf-2"
+vqfx_list="vqfx-leaf-1 vqfx-leaf-2"
+vmx_list="vmx-1 vmx-2"
 bms_list="bms-12 bms-22 bms-dh"
 
 #####################################################
 name=vqfx-spine-1-re
-vm_role[$name]=vmx-re
+vm_role[$name]=vqfx-re
 vm_address_list[$name]="10.6.8.21"
 #vm_nic_list[$name]="br=br-int dir=s1-re-em1 br=br-dummy
 #  dir=s1-xe0 dir=s1-xe1 dir=s1-xe2 dir=s1-xe3"
@@ -35,15 +35,13 @@ vm_nic_list[$name]="br=br-int br=br-s1-int br=br-dummy
   br=br-s1-xe0 br=br-s1-xe1 br=br-s1-xe2 br=br-s1-xe3"
 
 name=vqfx-spine-1-pfe
-vm_role[$name]=vmx-pfe
-vm_disk_bus[$name]=ide
+vm_role[$name]=vqfx-pfe
+vm_nic_model[$name]=e1000
 #vm_nic_list[$name]="br=br-dummy dir=s1-pfe-em1"
 vm_nic_list[$name]="br=br-dummy br=br-s1-int"
-vm_spec_arg[$name]="--memorybacking hugepages=yes
-  --numatune nodeset=0 --cpu host"
 
 name=vqfx-spine-2-re
-vm_role[$name]=vmx-re
+vm_role[$name]=vqfx-re
 vm_address_list[$name]="10.6.8.22"
 #vm_nic_list[$name]="br=br-int dir=s2-re-em1 br=br-dummy
 #  dir=s2-xe0 dir=s2-xe1 dir=s2-xe2 dir=s2-xe3"
@@ -51,12 +49,10 @@ vm_nic_list[$name]="br=br-int br=br-s2-int br=br-dummy
   br=br-s2-xe0 br=br-s2-xe1 br=br-s2-xe2 br=br-s2-xe3"
 
 name=vqfx-spine-2-pfe
-vm_role[$name]=vmx-pfe
-vm_disk_bus[$name]=ide
+vm_role[$name]=vqfx-pfe
+vm_nic_model[$name]=e1000
 #vm_nic_list[$name]="br=br-dummy dir=s2-pfe-em1"
 vm_nic_list[$name]="br=br-dummy br=br-s2-int"
-vm_spec_arg[$name]="--memorybacking hugepages=yes
-  --numatune nodeset=0 --cpu host"
 
 name=vqfx-leaf-1-re
 vm_role[$name]=vqfx-re
@@ -71,7 +67,6 @@ vm_role[$name]=vqfx-pfe
 vm_nic_model[$name]=e1000
 #vm_nic_list[$name]="br=br-dummy dir=l1-pfe-em1"
 vm_nic_list[$name]="br=br-dummy br=br-l1-int"
-
 
 name=vqfx-leaf-2-re
 vm_role[$name]=vqfx-re
@@ -148,15 +143,15 @@ configure_vmx_1()
     cat << __EOF__ > /tmp/conf
 set chassis fpc 0 pic 0 tunnel-services bandwidth 1g
 set interfaces lo0 unit 0 family inet address 10.6.0.31/32
-set interfaces ge-0/0/2 unit 0 family inet address 10.6.30.1/31
-set interfaces ge-0/0/3 unit 0 family inet address 10.6.30.5/31
-set routing-options route-distinguisher-id 10.6.0.31
+set interfaces ge-0/0/2 unit 0 family inet address 10.6.20.0/31
+set interfaces ge-0/0/3 unit 0 family inet address 10.6.20.2/31
+set routing-options route-distinguisher-id 10.6.0.21
 set protocols bgp group fabric type external
 set protocols bgp group fabric family inet unicast
 set protocols bgp group fabric export direct
-set protocols bgp group fabric local-as 64031
-set protocols bgp group fabric neighbor 10.6.30.0 peer-as 64021
-set protocols bgp group fabric neighbor 10.6.30.4 peer-as 64022
+set protocols bgp group fabric local-as 64021
+set protocols bgp group fabric neighbor 10.6.20.1 peer-as 64011
+set protocols bgp group fabric neighbor 10.6.20.3 peer-as 64012
 set policy-options policy-statement direct term t1 from protocol direct
 set policy-options policy-statement direct term t1 then accept
 set snmp community public authorization read-only
@@ -178,15 +173,15 @@ configure_vmx_2()
     cat << __EOF__ > /tmp/conf
 set chassis fpc 0 pic 0 tunnel-services bandwidth 1g
 set interfaces lo0 unit 0 family inet address 10.6.0.32/32
-set interfaces ge-0/0/2 unit 0 family inet address 10.6.30.3/31
-set interfaces ge-0/0/3 unit 0 family inet address 10.6.30.7/31
-set routing-options route-distinguisher-id 10.6.0.32
+set interfaces ge-0/0/2 unit 0 family inet address 10.6.20.4/31
+set interfaces ge-0/0/3 unit 0 family inet address 10.6.20.6/31
+set routing-options route-distinguisher-id 10.6.0.22
 set protocols bgp group fabric type external
 set protocols bgp group fabric family inet unicast
 set protocols bgp group fabric export direct
-set protocols bgp group fabric local-as 64032
-set protocols bgp group fabric neighbor 10.6.30.2 peer-as 64021
-set protocols bgp group fabric neighbor 10.6.30.6 peer-as 64022
+set protocols bgp group fabric local-as 64022
+set protocols bgp group fabric neighbor 10.6.20.5 peer-as 64011
+set protocols bgp group fabric neighbor 10.6.20.7 peer-as 64012
 set policy-options policy-statement direct term t1 from protocol direct
 set policy-options policy-statement direct term t1 then accept
 set snmp community public authorization read-only
@@ -207,10 +202,10 @@ configure_vqfx_spine_1()
 
     cat << __EOF__ > /tmp/conf
 set interfaces lo0 unit 0 family inet address 10.6.0.21/32
-set interfaces ge-0/0/0 unit 0 family inet address 10.6.30.0/31
-set interfaces ge-0/0/1 unit 0 family inet address 10.6.30.2/31
-set interfaces ge-0/0/2 unit 0 family inet address 10.6.20.0/31
-set interfaces ge-0/0/3 unit 0 family inet address 10.6.20.2/31
+set interfaces xe-0/0/0 unit 0 family inet address 10.6.30.0/31
+set interfaces xe-0/0/1 unit 0 family inet address 10.6.30.2/31
+set interfaces xe-0/0/2 unit 0 family inet address 10.6.20.0/31
+set interfaces xe-0/0/3 unit 0 family inet address 10.6.20.2/31
 set routing-options route-distinguisher-id 10.6.0.21
 set protocols bgp group fabric type external
 set protocols bgp group fabric family inet unicast
@@ -240,10 +235,10 @@ configure_vqfx_spine_2()
 
     cat << __EOF__ > /tmp/conf
 set interfaces lo0 unit 0 family inet address 10.6.0.22/32
-set interfaces ge-0/0/0 unit 0 family inet address 10.6.30.4/31
-set interfaces ge-0/0/1 unit 0 family inet address 10.6.30.6/31
-set interfaces ge-0/0/2 unit 0 family inet address 10.6.20.4/31
-set interfaces ge-0/0/3 unit 0 family inet address 10.6.20.6/31
+set interfaces xe-0/0/0 unit 0 family inet address 10.6.30.4/31
+set interfaces xe-0/0/1 unit 0 family inet address 10.6.30.6/31
+set interfaces xe-0/0/2 unit 0 family inet address 10.6.20.4/31
+set interfaces xe-0/0/3 unit 0 family inet address 10.6.20.6/31
 set routing-options route-distinguisher-id 10.6.0.22
 set protocols bgp group fabric type external
 set protocols bgp group fabric family inet unicast
