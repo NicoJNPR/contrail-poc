@@ -32,7 +32,7 @@ vm_address_list[$name]="10.6.8.21"
 #vm_nic_list[$name]="br=br-int dir=s1-re-em1 br=br-dummy
 #  dir=s1-xe0 dir=s1-xe1 dir=s1-xe2 dir=s1-xe3"
 vm_nic_list[$name]="br=br-int br=br-s1-int br=br-dummy
-  br=br-s1-xe0 br=br-s1-xe1 br=br-s1-xe2 br=br-s1-xe3 br=br-r1"
+  br=br-s1-xe0 br=br-s1-xe1 br=br-l1-xe2 dir=l1-xe3 br=br-r1"
 
 name=vqfx-spine-1-pfe
 vm_role[$name]=vqfx-pfe
@@ -46,7 +46,7 @@ vm_address_list[$name]="10.6.8.22"
 #vm_nic_list[$name]="br=br-int dir=s2-re-em1 br=br-dummy
 #  dir=s2-xe0 dir=s2-xe1 dir=s2-xe2 dir=s2-xe3"
 vm_nic_list[$name]="br=br-int br=br-s2-int br=br-dummy
-  br=br-s2-xe0 br=br-s2-xe1 br=br-s2-xe2 br=br-s2-xe3"
+  br=br-s2-xe0 br=br-s2-xe1 br=br-l2-xe2 dir=l2-xe3"
 
 name=vqfx-spine-2-pfe
 vm_role[$name]=vqfx-pfe
@@ -204,8 +204,6 @@ configure_vqfx_spine_1()
 set interfaces lo0 unit 0 family inet address 10.6.0.21/32
 set interfaces xe-0/0/0 unit 0 family inet address 10.6.30.0/31
 set interfaces xe-0/0/1 unit 0 family inet address 10.6.30.2/31
-set interfaces xe-0/0/2 unit 0 family inet address 10.6.20.0/31
-set interfaces xe-0/0/3 unit 0 family inet address 10.6.20.2/31
 set interfaces xe-0/0/4 unit 0 family ethernet-switching vlan members vlan-11
 set interfaces irb unit 11 family inet address 10.6.11.254/24
 set vlans vlan-11 vlan-id 11
@@ -239,8 +237,6 @@ configure_vqfx_spine_2()
 set interfaces lo0 unit 0 family inet address 10.6.0.22/32
 set interfaces xe-0/0/0 unit 0 family inet address 10.6.30.4/31
 set interfaces xe-0/0/1 unit 0 family inet address 10.6.30.6/31
-set interfaces xe-0/0/2 unit 0 family inet address 10.6.20.4/31
-set interfaces xe-0/0/3 unit 0 family inet address 10.6.20.6/31
 set routing-options route-distinguisher-id 10.6.0.22
 set protocols bgp group fabric type external
 set protocols bgp group fabric family inet unicast
