@@ -50,9 +50,9 @@ deploy()
     #fi
     #run_playbook $host "deploy-openstack"
 
-    echo "Uploading AppFormix packages..."
-    scp -r /opt/appformix $host:/opt/appformix
-    scp -r /opt/appformix-flow $host:/opt/appformix-flow
+    #echo "Uploading AppFormix packages..."
+    #scp -r /opt/appformix $host:/opt/appformix
+    #scp -r /opt/appformix-flow $host:/opt/appformix-flow
 
     echo "Launch Contrail Command..."
     scp cluster/$poc_cluster/instances.yaml $host:./instances.yaml
