@@ -63,7 +63,7 @@ command_servers:
               domain_id: default
               schema_root: /
               endpoint: https://localhost:9091
-user_command_volumes:
-- /opt/appformix:/opt/software/appformix
-- /opt/appformix-flow:/opt/software/xflow
+#user_command_volumes:
+#- /opt/appformix:/opt/software/appformix
+#- /opt/appformix-flow:/opt/software/xflow
 
