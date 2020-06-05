@@ -25,7 +25,7 @@ Pick cluster and underlay to build the POC.
 ### Cluster
 * [openstack](#a1-openstack)
 * [openstack-ha](#a2-openstack-ha)
-* [cfm](#a3-cfm)
+* [cfm](#a3-cfm)(now only works for R2005 onwards)
 * [kubernetes](#a4-kubernetes)
 * [kubernetes-ha](#a5-kubernetes-ha)
 * [openShift-origin](#a6-openshift)
